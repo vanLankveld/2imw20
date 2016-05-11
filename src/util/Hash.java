@@ -4,8 +4,8 @@ package util;
  * Class to construct a hash finunction to use with the graph sketch
  */
 public class Hash {
-    private static final int DEFAULT_MULTIPLIER = 5381; //Default value used as initial hash value
-    private long initHash; //Initial hash value
+    private static final int DEFAULT_SEED = 5381; //Default value used as initial hash value
+    private long seed; //Initial hash value
     private int nrOfBins; //Nr of possible bins to map to
 
     /**
@@ -14,7 +14,7 @@ public class Hash {
      * @param nrOfBins
      */
     public Hash(int nrOfBins, long initHash) {
-        this.initHash = initHash;
+        this.seed = initHash;
         this.nrOfBins = nrOfBins;
     }
 
@@ -23,7 +23,7 @@ public class Hash {
      * @param nrOfBins
      */
     public Hash(int nrOfBins) {
-        this(DEFAULT_MULTIPLIER, nrOfBins);
+        this(DEFAULT_SEED, nrOfBins);
     }
 
     public int getNrOfBins() {
@@ -31,7 +31,7 @@ public class Hash {
     }
 
     public long getInitHash() {
-        return initHash;
+        return seed;
     }
 
     /**
@@ -40,7 +40,7 @@ public class Hash {
      * @return
      */
     public long hashToBin(String value) {
-        long hash = (long)initHash;
+        long hash = (long)seed;
         for (int i = 0; i < value.length(); i++) {
             hash = ((hash << 5) + hash) + value.charAt(i);
         }
