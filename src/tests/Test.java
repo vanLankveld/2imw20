@@ -3,6 +3,7 @@ package tests;
 import com.sun.xml.internal.fastinfoset.util.StringArray;
 import model.Graph;
 import model.GraphSketch;
+import model.GraphSummary;
 import util.Hash;
 
 import java.io.BufferedReader;
@@ -32,11 +33,17 @@ public class Test {
         System.out.println("Printing original graph: ");
         System.out.println(graph.toString());
         System.out.println();
-        System.out.println("Creating sketch...");
-        System.out.println();
-        GraphSketch sketch = new GraphSketch(graph, new Hash(8, 37));
-        System.out.println("Printing graph sketch:");
-        System.out.println(sketch.toString());
+        System.out.println("Creating summary...");
+        GraphSummary summary = new GraphSummary(graph, 5, 10);
+
+        int i = 0;
+        for (GraphSketch sketch : summary.getGraphSketches()) {
+            System.out.println(String.format("GraphSketch %s",i));
+            System.out.println();
+            System.out.println(sketch.toString());
+            i++;
+            System.out.println();
+        }
     }
 
 }

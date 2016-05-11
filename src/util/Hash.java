@@ -10,11 +10,11 @@ public class Hash {
 
     /**
      * Creates a hash function using a given base value and a given nr of output bins.
-     * @param initHash
+     * @param seed
      * @param nrOfBins
      */
-    public Hash(int nrOfBins, long initHash) {
-        this.seed = initHash;
+    public Hash(int nrOfBins, long seed) {
+        this.seed = seed;
         this.nrOfBins = nrOfBins;
     }
 

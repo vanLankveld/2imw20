@@ -14,6 +14,11 @@ public class GraphSketch {
     private HashMap<Long, Set<String>> bins;
     private Hash hash;
 
+    /**
+     * Creates a new GraphSketch based on a given graph with the given hash function
+     * @param graph
+     * @param hash
+     */
     public GraphSketch(Graph graph, Hash hash) {
         this.adjMatrix = new Float[hash.getNrOfBins()][hash.getNrOfBins()];
         this.bins = new HashMap<>();
@@ -21,6 +26,10 @@ public class GraphSketch {
         this.constructSketch(graph);
     }
 
+    /**
+     * Constructs the sketch of the given graph.
+     * @param graph
+     */
     private void constructSketch(Graph graph) {
         for (Edge edge : graph.getEdges()) {
             String labelFrom = edge.getFrom().getLabel();
@@ -33,6 +42,11 @@ public class GraphSketch {
         }
     }
 
+    /**
+     * Adds the specified label to the specified bin. If the bin does not exist, it is created.
+     * @param bin
+     * @param label
+     */
     private void addToBin(long bin, String label) {
         if (this.bins.containsKey(bin)) {
             this.bins.get(bin).add(label);
@@ -43,6 +57,12 @@ public class GraphSketch {
         this.bins.put(bin, labels);
     }
 
+    /**
+     * Adds the specified weight to the specified edge in the adjacency matrix
+     * @param from
+     * @param to
+     * @param weight
+     */
     private void addToAdjMatrix(int from, int to, float weight) {
         if (this.adjMatrix[from][to] == null) {
             this.adjMatrix[from][to] = weight;
