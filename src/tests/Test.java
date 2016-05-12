@@ -4,8 +4,10 @@ import com.sun.xml.internal.fastinfoset.util.StringArray;
 import model.Graph;
 import model.GraphSketch;
 import model.GraphSummary;
+import model.queries.EdgeQuery;
 import util.Hash;
 
+import javax.management.Query;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -44,6 +46,8 @@ public class Test {
             i++;
             System.out.println();
         }
+
+        System.out.println(String.format("Precision of EdgeQuery: %.4f", EdgeQuery.getPrecision(summary, 100)));
     }
 
 }

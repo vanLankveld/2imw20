@@ -26,6 +26,18 @@ public class GraphSketch {
         this.constructSketch(graph);
     }
 
+    public Float[][] getAdjMatrix() {
+        return adjMatrix;
+    }
+
+    public HashMap<Long, Set<String>> getBins() {
+        return bins;
+    }
+
+    public Hash getHash() {
+        return hash;
+    }
+
     /**
      * Constructs the sketch of the given graph.
      * @param graph
