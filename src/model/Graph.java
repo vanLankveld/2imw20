@@ -1,7 +1,5 @@
 package model;
 
-import com.sun.javafx.css.CssError;
-
 import java.util.*;
 
 /**
@@ -15,6 +13,7 @@ public class Graph {
     /**
      * Create a new graph based on a list of Strings, each representing a single edge.
      * Each edge-String should have the following format: fromVertex,toVertex,weight.
+     *
      * @param edges
      */
     public Graph(Collection<String> edges) {
@@ -24,29 +23,69 @@ public class Graph {
     /**
      * Create a new graph based on a list of Strings, each representing a single edge.
      * Each edge-String should have the following format: fromVertex,toVertex,weight. With ',' being an arbitrary delimiter which can be specified as an argument
+     *
      * @param edges
      * @param delimiter
      */
     public Graph(Collection<String> edges, String delimiter) {
+        this(edges, delimiter, "CSV");
+    }
+
+    /**
+     * Create a new graph based on a list of Strings, each representing a single edge.
+     * For CSV format, each edge-String should have the following format: fromVertex,toVertex,weight. With ',' being an arbitrary delimiter which can be specified as an argument
+     * For GT_GRAPH format, only lines starting with 'a' are considered as edge-String, they should have the following format: a fromVertex toVertex weight. With ' '(space) being an arbitrary delimiter which can be specified as an argument
+     *
+     * @param edges
+     * @param delimiter
+     * @param format
+     */
+    public Graph(Collection<String> edges, String delimiter, String format) {
         this.edges = new HashSet<>();
         this.vertices = new HashMap<>();
 
-        for (String s : edges) {
-            String[] split = s.split(delimiter);
-            if (split.length < 3) {
-                throw new IllegalArgumentException(String.format("Input data should be in the form of 'from %s to $s weight' (without quotes)", delimiter, delimiter));
+        if (format.equals("CSV")) {
+
+            for (String s : edges) {
+                String[] split = s.split(delimiter);
+                if (split.length < 3) {
+                    throw new IllegalArgumentException(String.format("Input data should be in the form of 'from %s to $s weight' (without quotes)", delimiter, delimiter));
+                }
+
+                String fromLabel = split[0];
+                String toLabel = split[1];
+                float weight = Integer.parseInt(split[2]);
+
+                Vertex from = this.getVertexByIdOrCreate(fromLabel);
+                Vertex to = this.getVertexByIdOrCreate(toLabel);
+                Edge edge = new Edge(from, to, weight);
+                from.addOutgoingEdgeTo(edge);
+                this.edges.add(edge);
+            }
+        } else if (format.equals("GT_GRAPH")) {
+            for (String s : edges) {
+                if (s.startsWith("a ")) {
+                    String[] split = s.split(delimiter);
+
+                    if (split.length < 4) {
+                        throw new IllegalArgumentException(String.format("Input data should be in the form of 'a from %s to $s weight' (without quotes)", delimiter, delimiter));
+                    }
+
+                    String fromLabel = split[1];
+                    String toLabel = split[2];
+                    float weight = Integer.parseInt(split[3]);
+
+                    Vertex from = this.getVertexByIdOrCreate(fromLabel);
+                    Vertex to = this.getVertexByIdOrCreate(toLabel);
+                    Edge edge = new Edge(from, to, weight);
+                    from.addOutgoingEdgeTo(edge);
+                    this.edges.add(edge);
+                }
             }
 
-            String fromLabel = split[0];
-            String toLabel = split[1];
-            float weight = Integer.parseInt(split[2]);
+        } else
+            throw new IllegalArgumentException(String.format("Format %s is not supported, currently only CSV and GT_GRAPH are supported"));
 
-            Vertex from = this.getVertexByIdOrCreate(fromLabel);
-            Vertex to = this.getVertexByIdOrCreate(toLabel);
-            Edge edge = new Edge(from, to, weight);
-            from.addOutgoingEdgeTo(edge);
-            this.edges.add(edge);
-        }
     }
 
     public Set<Edge> getEdges() {
@@ -60,6 +99,7 @@ public class Graph {
     /**
      * If a vertex with the specified id exists in the set of vertices for this graph: returns this vertex. Otherwise,
      * creates a new vertex, adds it to the set of vertices and returns it.
+     *
      * @param label
      * @return
      */
@@ -67,7 +107,7 @@ public class Graph {
         if (this.vertices.containsKey(label)) {
             return vertices.get(label);
         }
-        Vertex vertex =new Vertex(label);
+        Vertex vertex = new Vertex(label);
         this.vertices.put(vertex.getLabel(), vertex);
         return vertex;
     }
