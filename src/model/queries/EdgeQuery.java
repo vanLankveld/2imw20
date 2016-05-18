@@ -8,12 +8,20 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by Guus on 12-05-16.
+ * Used to perform an aggregated edge query given two node labels. The specification for such a query
+ * is given in Tang e.a. (2016). Graph Stream Summarization: From Big Bang to Big Crunch
  */
 public class EdgeQuery extends GraphQuery {
 
     private String labelA, labelB;
 
+    /**
+     * Creates a new EdgeQuery instance which can be used to compute the aggregated edge weights between
+     * two nodes with labels labelA and labelB for the specified GraphSummary.
+     * @param graphSummary
+     * @param labelA
+     * @param labelB
+     */
     public EdgeQuery(GraphSummary graphSummary, String labelA, String labelB) {
         super(graphSummary);
         this.labelA = labelA;
@@ -36,18 +44,6 @@ public class EdgeQuery extends GraphQuery {
         return mergedWeight;
     }
 
-    private Float mergeMinimum(Float mergedWeight, Float currentWeight) {
-        if (currentWeight == null) {
-            return mergedWeight;
-        }
-        if (mergedWeight == null || mergedWeight > currentWeight) {
-           return currentWeight;
-        }
-        else {
-            return mergedWeight;
-        }
-    }
-
     @Override
     public Object executeQueryOnOriginal() {
         Graph graph = super.graphSummary.getGraph();
@@ -68,6 +64,14 @@ public class EdgeQuery extends GraphQuery {
         return mergedWeight;
     }
 
+    /**
+     * Returns the precision from performing a given number of random Edge Queries on the specified graph summary and the original graph on which it is
+     * based. If a query returns an equal result on both the graph summary and the original graph, the query result
+     * is considered correct. The precision here is defined as (nr of correct queries) / (total nr of queries).
+     * @param graphSummary
+     * @param nrOfQueries
+     * @return
+     */
     public static float getPrecision(GraphSummary graphSummary, int nrOfQueries) {
         int NrOfCorrectQueries = 0;
 
@@ -79,7 +83,10 @@ public class EdgeQuery extends GraphQuery {
             String b = labels.get(1);
 
             GraphQuery testQuery = new EdgeQuery(graphSummary, a, b);
-            if (testQuery.executeQueryOnSummary() != testQuery.executeQueryOnOriginal()) {
+            Float summaryResult = (Float)testQuery.executeQueryOnSummary();
+            Float originalResult = (Float)testQuery.executeQueryOnOriginal();
+            System.out.println(String.format("Summary: %.4f; Original: %.4f", summaryResult, originalResult));
+            if (GraphQuery.assertAquality(summaryResult, originalResult)) {
                 NrOfCorrectQueries++;
             }
         }

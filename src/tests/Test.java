@@ -5,6 +5,7 @@ import model.Graph;
 import model.GraphSketch;
 import model.GraphSummary;
 import model.queries.EdgeQuery;
+import model.queries.NodeQuery;
 import util.Hash;
 
 import javax.management.Query;
@@ -36,7 +37,7 @@ public class Test {
         System.out.println(graph.toString());
         System.out.println();
         System.out.println("Creating summary...");
-        GraphSummary summary = new GraphSummary(graph, 5, 10);
+        GraphSummary summary = new GraphSummary(graph, 10, 10);
 
         int i = 0;
         for (GraphSketch sketch : summary.getGraphSketches()) {
@@ -48,6 +49,7 @@ public class Test {
         }
 
         System.out.println(String.format("Precision of EdgeQuery: %.4f", EdgeQuery.getPrecision(summary, 100)));
+        System.out.println(String.format("Precision of NodeQuery: %.4f", NodeQuery.getPrecision(summary, 100)));
     }
 
 }
