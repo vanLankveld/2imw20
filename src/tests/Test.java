@@ -1,14 +1,11 @@
 package tests;
 
-import com.sun.xml.internal.fastinfoset.util.StringArray;
 import model.Graph;
 import model.GraphSketch;
 import model.GraphSummary;
 import model.queries.EdgeQuery;
 import model.queries.NodeQuery;
 import util.Hash;
-
-import javax.management.Query;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -20,7 +17,8 @@ public class Test {
 
     public static void main(String[] args) {
         List<String> lines = new ArrayList<String>();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("test.csv"))) {
+//      try (BufferedReader bufferedReader = new BufferedReader(new FileReader("test.csv"))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("test_gt_graph"))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 lines.add(line);
@@ -32,7 +30,8 @@ public class Test {
             e.printStackTrace();
         }
 
-        Graph graph = new Graph(lines, ",");
+//      Graph graph = new Graph(lines, ",");
+        Graph graph = new Graph(lines, " ","GT_GRAPH");
         System.out.println("Printing original graph: ");
         System.out.println(graph.toString());
         System.out.println();
@@ -41,7 +40,7 @@ public class Test {
 
         int i = 0;
         for (GraphSketch sketch : summary.getGraphSketches()) {
-            System.out.println(String.format("GraphSketch %s",i));
+            System.out.println(String.format("GraphSketch %s", i));
             System.out.println();
             System.out.println(sketch.toString());
             i++;
