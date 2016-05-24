@@ -5,7 +5,7 @@ import model.*;
 import java.util.*;
 
 /**
- * Used to perform an aggregated node query given two node labels. The specification for such a query
+ * Used to perform a reachability query given two node labels. The specification for such a query
  * is given in Tang e.a. (2016). Graph Stream Summarization: From Big Bang to Big Crunch
  */
 public class PathQuery extends GraphQuery {
@@ -27,14 +27,17 @@ public class PathQuery extends GraphQuery {
 
     @Override
     public Object executeQueryOnSummary() {
+        boolean result = true;
+
         for (GraphSketch sketch : this.graphSummary.getGraphSketches()) {
             int binA = (int)sketch.getHash().hashToBin(labelA);
             int binB = (int)sketch.getHash().hashToBin(labelB);
             if (!reach(binA, binB, new HashSet<>(), sketch)) {
-                return false;
+                result = false;
+                break;
             }
         }
-        return true;
+        return result;
     }
 
     @Override
@@ -103,7 +106,14 @@ public class PathQuery extends GraphQuery {
         return false;
     }
 
-
+    /**
+     * Returns the precision from performing a given number of random Path Queries on the specified graph summary and the original graph on which it is
+     * based. If a query returns an equal result on both the graph summary and the original graph, the query result
+     * is considered correct. The precision here is defined as (nr of correct queries) / (total nr of queries).
+     * @param graphSummary
+     * @param nrOfQueries
+     * @return
+     */
     public static float getPrecision(GraphSummary graphSummary, int nrOfQueries) {
         int NrOfCorrectQueries = 0;
 

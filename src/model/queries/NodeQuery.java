@@ -114,6 +114,14 @@ public class NodeQuery extends GraphQuery {
         return mergedWeight;
     }
 
+    /**
+     * Returns the precision from performing a given number of random Node Queries on the specified graph summary and the original graph on which it is
+     * based. If a query returns an equal result on both the graph summary and the original graph, the query result
+     * is considered correct. The precision here is defined as (nr of correct queries) / (total nr of queries).
+     * @param graphSummary
+     * @param nrOfQueries
+     * @return
+     */
     public static float getPrecision(GraphSummary graphSummary, int nrOfQueries) {
         int NrOfCorrectQueries = 0;
 
