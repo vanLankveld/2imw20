@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Used to perform an aggregated node query given two node labels. The specification for such a query
+ * Used to perform an aggregated node query given a single node label and a direction. The specification for such a query
  * is given in Tang e.a. (2016). Graph Stream Summarization: From Big Bang to Big Crunch
  */
 public class NodeQuery extends GraphQuery {
