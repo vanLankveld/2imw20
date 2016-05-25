@@ -54,7 +54,7 @@ public class Graph {
 
                 String fromLabel = split[0];
                 String toLabel = split[1];
-                float weight = Integer.parseInt(split[2]);
+                int weight = Integer.parseInt(split[2]);
 
                 Vertex from = this.getVertexByIdOrCreate(fromLabel);
                 Vertex to = this.getVertexByIdOrCreate(toLabel);
@@ -73,7 +73,7 @@ public class Graph {
 
                     String fromLabel = split[1];
                     String toLabel = split[2];
-                    float weight = Integer.parseInt(split[3]);
+                    int weight = Integer.parseInt(split[3]);
 
                     Vertex from = this.getVertexByIdOrCreate(fromLabel);
                     Vertex to = this.getVertexByIdOrCreate(toLabel);

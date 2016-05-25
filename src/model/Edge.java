@@ -3,18 +3,19 @@ package model;
 /**
  * Represents a single directed edge in a graph
  */
-public class Edge {
+public class Edge implements Comparable<Edge> {
     private Vertex from;
     private Vertex to;
-    private float weight;
+    private int weight;
 
     /**
      * Creates a new directed edge between to vertices with direction from->to
+     *
      * @param from
      * @param to
      * @param weight
      */
-    public Edge(Vertex from, Vertex to, float weight) {
+    public Edge(Vertex from, Vertex to, int weight) {
         this.from = from;
         this.to = to;
         this.weight = weight;
@@ -22,6 +23,7 @@ public class Edge {
 
     /**
      * Gets the source vertex
+     *
      * @return
      */
     public Vertex getFrom() {
@@ -30,6 +32,7 @@ public class Edge {
 
     /**
      * Gets the destination vertex
+     *
      * @return
      */
     public Vertex getTo() {
@@ -38,9 +41,10 @@ public class Edge {
 
     /**
      * Gets the weight of this edge
+     *
      * @return
      */
-    public float getWeight() {
+    public int getWeight() {
         return weight;
     }
 
@@ -63,5 +67,10 @@ public class Edge {
         result = 31 * result + to.hashCode();
         result = 31 * result + (weight != +0.0f ? Float.floatToIntBits(weight) : 0);
         return result;
+    }
+
+    @Override
+    public int compareTo(Edge o) {
+        return this.weight - o.weight;
     }
 }

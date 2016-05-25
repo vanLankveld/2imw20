@@ -49,8 +49,8 @@ public class NodeQuery extends GraphQuery {
     @Override
     public Object executeQueryOnSummary() {
 
-        Float mergedWeight = null;
-        Float currentWeight;
+        Integer mergedWeight = null;
+        Integer currentWeight;
 
         for (GraphSketch graphSketch : this.graphSummary.getGraphSketches()) {
             int bucketIndex = (int)graphSketch.getHash().hashToBin(this.nodeLabel);
@@ -84,7 +84,7 @@ public class NodeQuery extends GraphQuery {
     @Override
     public Object executeQueryOnOriginal() {
 
-        Float mergedWeight = null;
+        Integer mergedWeight = null;
 
         for (Edge edge : this.graphSummary.getGraph().getEdges()) {
 

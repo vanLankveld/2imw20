@@ -30,6 +30,7 @@ public class GraphSummary {
 
         for (int i = 0; i < nrOfSketches; i++) {
             long seed = BigInteger.probablePrime(16, rnd).longValue();
+            System.out.println("Creating sketch: " + i);
             createSketch(seed);
         }
     }

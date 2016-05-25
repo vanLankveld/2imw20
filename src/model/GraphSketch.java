@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  */
 public class GraphSketch {
 
-    private Float[][] adjMatrix;
+    private Integer[][] adjMatrix;
     private HashMap<Long, Set<String>> bins;
     private Hash hash;
 
@@ -20,13 +20,13 @@ public class GraphSketch {
      * @param hash
      */
     public GraphSketch(Graph graph, Hash hash) {
-        this.adjMatrix = new Float[hash.getNrOfBins()][hash.getNrOfBins()];
+        this.adjMatrix = new Integer[hash.getNrOfBins()][hash.getNrOfBins()];
         this.bins = new HashMap<>();
         this.hash = hash;
         this.constructSketch(graph);
     }
 
-    public Float[][] getAdjMatrix() {
+    public Integer[][] getAdjMatrix() {
         return adjMatrix;
     }
 
@@ -75,7 +75,7 @@ public class GraphSketch {
      * @param to
      * @param weight
      */
-    private void addToAdjMatrix(int from, int to, float weight) {
+    private void addToAdjMatrix(int from, int to, int weight) {
         if (this.adjMatrix[from][to] == null) {
             this.adjMatrix[from][to] = weight;
             return;

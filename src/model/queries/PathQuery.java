@@ -64,7 +64,7 @@ public class PathQuery extends GraphQuery {
         }
 
         for (int i = 0; i < sketch.getAdjMatrix()[binA].length; i++) {
-            Float weightToNeighbour =  sketch.getAdjMatrix()[binA][i];
+            Integer weightToNeighbour =  sketch.getAdjMatrix()[binA][i];
             if (weightToNeighbour == null || visited.contains(i)) {
                 continue;
             }

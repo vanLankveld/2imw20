@@ -20,7 +20,7 @@ public class Test {
     public static void main(String[] args) {
         List<String> lines = new ArrayList<String>();
 //      try (BufferedReader bufferedReader = new BufferedReader(new FileReader("test.csv"))) {
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("test_gt_graph"))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("dblp_co_authur.csv"))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 lines.add(line);
@@ -33,12 +33,12 @@ public class Test {
         }
 
 //      Graph graph = new Graph(lines, ",");
-        Graph graph = new Graph(lines, " ","GT_GRAPH");
+        Graph graph = new Graph(lines, ",","CSV");
         System.out.println("Printing original graph: ");
-        System.out.println(graph.toString());
+//        System.out.println(graph.toString());
         System.out.println();
         System.out.println("Creating summary...");
-        GraphSummary summary = new GraphSummary(graph, 10, 50);
+        GraphSummary summary = new GraphSummary(graph, 9, 484);
 
         /**
         int i = 0;
@@ -50,10 +50,13 @@ public class Test {
             System.out.println();
         }**/
 
-        System.out.println(String.format("Precision of EdgeQuery: %.4f", EdgeQuery.getPrecision(summary, 1000)));
-        System.out.println(String.format("Precision of NodeQuery: %.4f", NodeQuery.getPrecision(summary, 1000)));
-        System.out.println(String.format("Precision of PathQuery: %.4f", PathQuery.getPrecision(summary, 1000)));
-        System.out.println(String.format("Precision of SubGraphQuery: %.4f", SubGraphQuery.getPrecision(summary, 1000, 10)));
+        System.out.println(String.format("Inter Accuracy: %.4f", EdgeQuery.getInterAccuracy(summary, 100)));
+
+
+//        System.out.println(String.format("Precision of EdgeQuery: %.4f", EdgeQuery.getPrecision(summary, 1000)));
+//        System.out.println(String.format("Precision of NodeQuery: %.4f", NodeQuery.getPrecision(summary, 1000)));
+//        System.out.println(String.format("Precision of PathQuery: %.4f", PathQuery.getPrecision(summary, 1000)));
+//        System.out.println(String.format("Precision of SubGraphQuery: %.4f", SubGraphQuery.getPrecision(summary, 1000, 10)));
     }
 
 }
