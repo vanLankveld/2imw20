@@ -128,7 +128,7 @@ public class PathQuery extends GraphQuery {
             Boolean summaryResult = (Boolean)testQuery.executeQueryOnSummary();
             Boolean originalResult = (Boolean)testQuery.executeQueryOnOriginal();
             //System.out.println(String.format("Summary: %.4f; Original: %.4f", summaryResult, originalResult));
-            if (GraphQuery.assertAquality(summaryResult, originalResult)) {
+            if (GraphQuery.assertEquality(summaryResult, originalResult)) {
                 NrOfCorrectQueries++;
             }
         }

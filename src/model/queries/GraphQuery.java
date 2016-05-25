@@ -44,7 +44,7 @@ public abstract class GraphQuery extends Symbol {
         }
     }
 
-    public static boolean assertAquality(Object value1, Object value2) {
+    public static boolean assertEquality(Object value1, Object value2) {
         if (value1 == null && value2 == null) {
             return true;
         }

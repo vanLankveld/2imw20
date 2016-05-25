@@ -98,18 +98,18 @@ public class GraphSketch {
         stringBuilder.append(System.lineSeparator());
 
         for (long bin : this.bins.keySet()) {
-            stringBuilder.append("\t\t");
+            stringBuilder.append(",");
             stringBuilder.append(bin);
         }
         stringBuilder.append(System.lineSeparator());
 
         for (int from = 0; from < this.hash.getNrOfBins(); from++){
             stringBuilder.append(from);
-            stringBuilder.append("\t\t");
+            stringBuilder.append(",");
             for (int to = 0; to < this.hash.getNrOfBins(); to++) {
                 if (this.adjMatrix[from][to] == null) stringBuilder.append("-");
                 else stringBuilder.append(this.adjMatrix[from][to]);
-                stringBuilder.append("\t\t");
+                stringBuilder.append(",");
             }
             stringBuilder.append(System.lineSeparator());
         }
