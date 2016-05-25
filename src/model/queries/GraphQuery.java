@@ -1,11 +1,12 @@
 package model.queries;
 
+import beaver.Symbol;
 import model.GraphSummary;
 
 /**
  * Abstract superclass for Queries that can be performed on a GraphSummary
  */
-public abstract class GraphQuery {
+public abstract class GraphQuery extends Symbol {
 
     protected GraphSummary graphSummary;
 

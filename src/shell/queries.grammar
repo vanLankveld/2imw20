@@ -1,0 +1,86 @@
+%package "shell.parser";
+%class "TCMQueryParser";
+
+%import "model.queries.GraphQuery";
+%import "model.queries.NodeQuery";
+%import "model.queries.Direction";
+%import "model.SubGraph";
+%import "model.queries.Pair";
+%import "java.util.ArrayList";
+%import "java.util.HashSet";
+%import "java.util.Set";
+%import "shell.Shell";
+%import "shell.ast.Command";
+
+%terminals CREATE, QUERY, BENCHMARK, SHOWSUMMARY;
+%terminals EDGE, NODE, PATH, SUBGRAPH;
+%terminals NUMBER, STRING, DIR_IN, DIR_OUT, DIR_UNI;
+%terminals PAR_OPEN, PAR_CLOSE, SEMICOLON, COMMA, BRACE_OPEN, BRACE_CLOSE;
+
+%typeof GraphQuery, EdgeQuery, NodeQuery, PathQuery, SubGraphQuery = "GraphQuery";
+%typeof Direction = "Direction";
+%typeof SubGraph, SubGraphBody = "SubGraph";
+%typeof SubGraphEdge = "Pair<String>";
+%typeof NUMBER = "int";
+%typeof STRING = "String";
+
+%goal StatementSequence;
+
+StatementSequence = Statement Statement*;
+
+Statement = StatementBody SEMICOLON;
+
+StatementBody   = CreateCommand
+                | QueryCommand
+                | BenchMarkCommand
+                | ShowCommand
+                ;
+
+CreateCommand = CREATE PAR_OPEN STRING.f COMMA NUMBER.s COMMA NUMBER.b COMMA STRING.g COMMA STRING.d PAR_CLOSE {: Shell.CreateGraphSummary(f, s, b, g, d); return new Command("CreateCommand"); :};
+
+QueryCommand    = QUERY GraphQuery.q {: Shell.executeQuery(q); return new Command("QueryCommand"); :};
+
+GraphQuery  = EdgeQuery
+            | NodeQuery
+            | PathQuery
+            | SubGraphQuery
+            ;
+
+EdgeQuery   = EDGE PAR_OPEN STRING.a COMMA STRING.b PAR_CLOSE {: return Shell.createEdgeQuery(a, b); :};
+
+NodeQuery   = NODE PAR_OPEN STRING.l COMMA Direction.d PAR_CLOSE {: return Shell.createNodeQuery(l, d); :};
+
+PathQuery   = PATH PAR_OPEN STRING.a COMMA STRING.b PAR_CLOSE {: return Shell.createPathQuery(a, b); :};
+
+SubGraphQuery   = SUBGRAPH PAR_OPEN SubGraph.g PAR_CLOSE {: return Shell.createSubGraphQuery(g); :};
+
+Direction   = DIR_IN {: return new Direction(Direction.DirectionEnum.IN); :}
+            | DIR_OUT {: return new Direction(Direction.DirectionEnum.OUT); :}
+            | DIR_UNI {: return new Direction(Direction.DirectionEnum.UNDIRECTED); :}
+            ;
+
+SubGraph    = BRACE_OPEN SubGraphBody.b BRACE_CLOSE {: return b; :};
+
+SubGraphBody    = SubGraphEdge.e {: Set<Pair<String>> b = new HashSet<>(); b.add(e); return new SubGraph(b); :}
+                | SubGraphBody.b COMMA SubGraphEdge.e {: b.getEdges().add(e); return b; :}
+                ;
+
+SubGraphEdge    = PAR_OPEN STRING.a COMMA STRING.b PAR_CLOSE {: return new Pair<String>(a, b); :};
+
+BenchMarkCommand    = BENCHMARK BenchMarkBody;
+
+BenchMarkBody   = EdgeBenchmark
+                | NodeBenchmark
+                | PathBenchmark
+                | SubGraphBenchmark
+                ;
+
+EdgeBenchmark   = EDGE PAR_OPEN NUMBER.n PAR_CLOSE {: Shell.BenchmarkEdgeQuery(n); return new Command("EdgeBenchMark"); :};
+
+NodeBenchmark   = NODE PAR_OPEN NUMBER.n PAR_CLOSE {: Shell.BenchmarkNodeQuery(n); return new Command("NodeBenchmark"); :};
+
+PathBenchmark   = PATH PAR_OPEN NUMBER.n PAR_CLOSE {: Shell.BenchmarkPathQuery(n); return new Command("PathBenchmark"); :};
+
+SubGraphBenchmark   = SUBGRAPH PAR_OPEN NUMBER.n COMMA NUMBER.u PAR_CLOSE {: Shell.BenchmarkSubGraphQuery(n, u); return new Command("SubGraphBenchmark"); :};
+
+ShowCommand = SHOWSUMMARY {: Shell.showSummary(); return new Command("ShowCommand"); :};

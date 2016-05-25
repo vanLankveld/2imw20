@@ -1,9 +1,6 @@
 package model.queries;
 
-import model.Edge;
-import model.GraphSketch;
-import model.GraphSummary;
-import model.Vertex;
+import model.*;
 
 import java.util.*;
 
@@ -13,11 +10,9 @@ import java.util.*;
  */
 public class SubGraphQuery extends GraphQuery {
 
+    private SubGraph subGraph;
 
-
-    Set<Pair<String>> subGraph;
-
-    public SubGraphQuery(GraphSummary graphSummary, Set<Pair<String>> subGraph) {
+    public SubGraphQuery(GraphSummary graphSummary, SubGraph subGraph) {
         super(graphSummary);
         this.subGraph = subGraph;
     }
@@ -28,7 +23,7 @@ public class SubGraphQuery extends GraphQuery {
 
         for (GraphSketch sketch : this.graphSummary.getGraphSketches()) {
             Float currentWeight = 0f;
-            for (Pair<String> pair : this.subGraph) {
+            for (Pair<String> pair : this.subGraph.getEdges()) {
 
                 int hashedA = (int)sketch.getHash().hashToBin(pair.getA());
                 int hashedB = (int)sketch.getHash().hashToBin(pair.getB());
@@ -52,7 +47,7 @@ public class SubGraphQuery extends GraphQuery {
     public Object executeQueryOnOriginal() {
         Float weight = 0f;
 
-        for (Pair<String> pair : this.subGraph) {
+        for (Pair<String> pair : this.subGraph.getEdges()) {
 
             Vertex vertexA = this.graphSummary.getGraph().getVertices().get(pair.getA());
 
@@ -78,14 +73,14 @@ public class SubGraphQuery extends GraphQuery {
 
         for (int i = 0; i < nrOfQueries; i++) {
 
-            Set<Pair<String>> subGraph = new HashSet<>();
+            SubGraph subGraph = new SubGraph();
 
             int subGraphSize = 1 + random.nextInt(subGraphUpperBound-1);
             for (int j = 0; j < subGraphSize; j++) {
                 Collections.shuffle(labels);
                 String a = labels.get(0);
                 String b = labels.get(1);
-                subGraph.add(new Pair<>(a, b));
+                subGraph.getEdges().add(new Pair<>(a, b));
             }
 
             GraphQuery testQuery = new SubGraphQuery(graphSummary, subGraph);

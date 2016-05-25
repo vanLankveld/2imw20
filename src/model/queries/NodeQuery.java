@@ -1,5 +1,6 @@
 package model.queries;
 
+import beaver.Symbol;
 import model.Edge;
 import model.GraphSketch;
 import model.GraphSummary;
@@ -13,14 +14,6 @@ import java.util.List;
  * is given in Tang e.a. (2016). Graph Stream Summarization: From Big Bang to Big Crunch
  */
 public class NodeQuery extends GraphQuery {
-
-    public enum Direction {
-        IN, OUT, UNDIRECTED;
-
-        public static Direction random() {
-            return Direction.values()[(int)((double)Direction.values().length * Math.random())];
-        }
-    }
 
     private final String nodeLabel;
     private final Direction direction;
@@ -56,7 +49,7 @@ public class NodeQuery extends GraphQuery {
             int bucketIndex = (int)graphSketch.getHash().hashToBin(this.nodeLabel);
 
             for (int i = 0; i < graphSketch.getAdjMatrix()[0].length; i++) {
-                switch (this.direction) {
+                switch (this.direction.getDirection()) {
                     case OUT:
                         currentWeight = graphSketch.getAdjMatrix()[bucketIndex][i];
                         break;
@@ -91,7 +84,7 @@ public class NodeQuery extends GraphQuery {
             String to = edge.getTo().getLabel();
             String from = edge.getFrom().getLabel();
 
-            switch (this.direction) {
+            switch (this.direction.getDirection()) {
                 case IN:
                     if (to != this.nodeLabel) {
                         continue;
