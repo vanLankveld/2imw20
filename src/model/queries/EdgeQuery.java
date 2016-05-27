@@ -101,7 +101,7 @@ public class EdgeQuery extends GraphQuery {
      *
      * @param graphSummary
      * @param k
-     * @return
+     * @return InterAccuracy
      */
     public static float getInterAccuracy(GraphSummary graphSummary, int k) {
 
