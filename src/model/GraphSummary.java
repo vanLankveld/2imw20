@@ -29,8 +29,8 @@ public class GraphSummary {
         Random rnd = new Random();
 
         for (int i = 0; i < nrOfSketches; i++) {
-            long seed = BigInteger.probablePrime(16, rnd).longValue();
-            System.out.println("Creating sketch: " + i);
+            long seed = BigInteger.probablePrime(24, rnd).longValue();
+            System.out.println("Creating sketch: " + i+", seed: "+seed);
             createSketch(seed);
         }
     }
