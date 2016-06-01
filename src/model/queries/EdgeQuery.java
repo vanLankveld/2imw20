@@ -36,6 +36,8 @@ public class EdgeQuery extends GraphQuery {
 
             Integer weight = graphSketch.getAdjMatrix()[aHash][bHash];
 
+            System.out.println("\t\t\t\t\t\t\t\t\t\taHash: "+aHash+"  bHash: "+bHash);
+//            System.out.println("Weight for sketch: "+weight);
             mergedWeight = mergeMinimum(mergedWeight, weight);
         }
 
@@ -95,7 +97,6 @@ public class EdgeQuery extends GraphQuery {
 
 
     /**
-     *
      * Returns the inter-accuracy of the sketch. It computes the top 100 edges from both original graph and the graph
      * sketch and then compute how much of them are overlapping. inter accuracy = countOfMatches / k
      *
@@ -129,17 +130,11 @@ public class EdgeQuery extends GraphQuery {
         Map<String, Integer> edgeTop100Pool = new HashMap<String, Integer>();
 
         int counter = 0;
-        int prevMapSize = 0;
 
         for (Edge edge : edgeSetOriginal) {
             counter += 1;
             if (counter % 100000 == 0) {
                 System.out.println(counter);
-            }
-
-            if (prevMapSize != edgeTop100Pool.size()) {
-                prevMapSize = edgeTop100Pool.size();
-                System.out.println(prevMapSize);
             }
 
             GraphQuery edgeQuery = new EdgeQuery(graphSummary, edge.getFrom().getLabel(), edge.getTo().getLabel());
@@ -208,13 +203,43 @@ public class EdgeQuery extends GraphQuery {
         for (int i = 0; i < nrOfQueries; i++) {
             Collections.shuffle(labels);
             String a = labels.get(0);
-            String b = labels.get(1);
+            Vertex aVertex = graphSummary.getGraph().getVertices().get(a);
+            Set<Edge> outGoingEdges = aVertex.getOutgoingEdges();
+
+            Random randomizer = new Random();
+            if(outGoingEdges.size()==0){
+                i--;
+                continue;
+            }
+            int item = randomizer.nextInt(outGoingEdges.size());
+            int ii = 0;
+            Edge theRandomEdge = null;
+            for (Object obj : outGoingEdges) {
+                if (ii == item)
+                    theRandomEdge = (Edge) obj;
+                ii = ii + 1;
+            }
+
+            Vertex bVertex = theRandomEdge.getTo();
+            Integer originalWeight = theRandomEdge.getWeight();
+
+            String b = bVertex.getLabel();
+
+            System.out.println(b);
 
             GraphQuery testQuery = new EdgeQuery(graphSummary, a, b);
-            Float summaryResult = (Float) testQuery.executeQueryOnSummary();
-            Float originalResult = (Float) testQuery.executeQueryOnOriginal();
-            Float relativeError = summaryResult / originalResult - 1;
+            Integer summaryResult = (Integer) testQuery.executeQueryOnSummary();
+            if (summaryResult == null)
+                summaryResult = 0;
+            Integer originalResult = (Integer) testQuery.executeQueryOnOriginal();
+
+            System.out.println(summaryResult);
+            System.out.println(originalWeight);
+            System.out.println(originalResult);
+            Float relativeError = (float) summaryResult / (float) originalResult - 1;
             sumRelativeError += relativeError;
+
+            System.out.println("Query "+i+", relativeError: "+relativeError);
         }
 
         return sumRelativeError / (float) nrOfQueries;
