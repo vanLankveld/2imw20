@@ -19,16 +19,15 @@ public class SubGraphQuery extends GraphQuery {
 
     @Override
     public Object executeQueryOnSummary() {
-        Float mergedWeight = 0f;
+        Integer mergedWeight = 0;
 
         for (GraphSketch sketch : this.graphSummary.getGraphSketches()) {
-            Float currentWeight = 0f;
+            Integer currentWeight = 0;
             for (Pair<String> pair : this.subGraph.getEdges()) {
-
                 int hashedA = (int)sketch.getHash().hashToBin(pair.getA());
                 int hashedB = (int)sketch.getHash().hashToBin(pair.getB());
 
-                Float weight = sketch.getAdjMatrix()[hashedA][hashedB];
+                Integer weight = sketch.getAdjMatrix()[hashedA][hashedB];
 
                 if (weight != null) {
                     currentWeight += weight;
@@ -45,7 +44,7 @@ public class SubGraphQuery extends GraphQuery {
 
     @Override
     public Object executeQueryOnOriginal() {
-        Float weight = 0f;
+        Integer weight = 0;
 
         for (Pair<String> pair : this.subGraph.getEdges()) {
 
@@ -84,8 +83,8 @@ public class SubGraphQuery extends GraphQuery {
             }
 
             GraphQuery testQuery = new SubGraphQuery(graphSummary, subGraph);
-            Float summaryResult = (Float)testQuery.executeQueryOnSummary();
-            Float originalResult = (Float)testQuery.executeQueryOnOriginal();
+            Integer summaryResult = (Integer)testQuery.executeQueryOnSummary();
+            Integer originalResult = (Integer)testQuery.executeQueryOnOriginal();
             //System.out.println(String.format("Summary: %.4f; Original: %.4f", summaryResult, originalResult));
             if (GraphQuery.assertEquality(summaryResult, originalResult)) {
                 NrOfCorrectQueries++;
@@ -93,5 +92,13 @@ public class SubGraphQuery extends GraphQuery {
         }
 
         return (float)NrOfCorrectQueries / (float)nrOfQueries;
+    }
+
+    public static float getAverageRelativeError(GraphSummary graphSummary, int nrOfQueries) {
+        return 0;
+    }
+
+    public static float getInterAccuracy(GraphSummary graphSummary, int nrOfQueries) {
+        return 0;
     }
 }

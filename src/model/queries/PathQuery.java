@@ -64,7 +64,7 @@ public class PathQuery extends GraphQuery {
         }
 
         for (int i = 0; i < sketch.getAdjMatrix()[binA].length; i++) {
-            Float weightToNeighbour =  sketch.getAdjMatrix()[binA][i];
+            Integer weightToNeighbour =  sketch.getAdjMatrix()[binA][i];
             if (weightToNeighbour == null || visited.contains(i)) {
                 continue;
             }
@@ -134,5 +134,13 @@ public class PathQuery extends GraphQuery {
         }
 
         return (float)NrOfCorrectQueries / (float)nrOfQueries;
+    }
+
+    public static float getAverageRelativeError(GraphSummary graphSummary, int nrOfQueries) {
+        return 0;
+    }
+
+    public static float getInterAccuracy(GraphSummary graphSummary, int nrOfQueries) {
+        return 0;
     }
 }

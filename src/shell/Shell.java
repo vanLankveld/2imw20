@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Guus on 25-05-16.
+ * Used to run a commandline utility to test the system in real-time
  */
 public class Shell {
 
@@ -65,12 +65,21 @@ public class Shell {
     }
 
     public static void BenchmarkEdgeQuery(int n) {
+        output(String.format("Benchmarking EdgeQuery with number of queries=%s", n));
+        output(String.format("Inter accuracy of EdgeQuery: %.4f", EdgeQuery.getInterAccuracy(graphSummary, n)));
+        output(String.format("Average relative error of EdgeQuery: %.4f", EdgeQuery.getAverageRelativeError(graphSummary, n)));
     }
 
     public static void BenchmarkNodeQuery(int n) {
+        output(String.format("Benchmarking NodeQuery with number of queries=%s", n));
+        output(String.format("Inter accuracy of NodeQuery: %.4f", NodeQuery.getInterAccuracy(graphSummary, n)));
+        output(String.format("Average relative error of NodeQuery: %.4f", NodeQuery.getAverageRelativeError(graphSummary, n)));
     }
 
     public static void BenchmarkPathQuery(int n) {
+        output(String.format("Benchmarking PathQuery with number of queries=%s", n));
+        output(String.format("Inter accuracy of PathQuery: %.4f", PathQuery.getInterAccuracy(graphSummary, n)));
+        output(String.format("Average relative error of PathQuery: %.4f", PathQuery.getAverageRelativeError(graphSummary, n)));
     }
 
     public static void showSummary() {
@@ -85,6 +94,9 @@ public class Shell {
     }
 
     public static void BenchmarkSubGraphQuery(int n, int u) {
+        output(String.format("Benchmarking SubGraphQuery with number of queries=%s", n));
+        output(String.format("Inter accuracy of SubGraphQuery: %.4f", SubGraphQuery.getInterAccuracy(graphSummary, n)));
+        output(String.format("Average relative error of SubGraphQuery: %.4f", SubGraphQuery.getAverageRelativeError(graphSummary, n)));
     }
 
     public static void main(String[] args) throws IOException, Parser.Exception {
