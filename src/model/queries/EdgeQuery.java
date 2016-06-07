@@ -2,6 +2,9 @@ package model.queries;
 
 import model.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.*;
 
 /**
@@ -87,7 +90,7 @@ public class EdgeQuery extends GraphQuery {
             Integer summaryResult = (Integer) testQuery.executeQueryOnSummary();
             Integer originalResult = (Integer) testQuery.executeQueryOnOriginal();
             //System.out.println(String.format("Summary: %.4f; Original: %.4f", summaryResult, originalResult));
-            if (GraphQuery.assertAquality(summaryResult, originalResult)) {
+            if (GraphQuery.assertEquality(summaryResult, originalResult)) {
                 NrOfCorrectQueries++;
             }
         }

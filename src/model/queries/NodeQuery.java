@@ -3,6 +3,9 @@ package model.queries;
 import model.Edge;
 import model.GraphSketch;
 import model.GraphSummary;
+import model.Vertex;
+import util.SortOrder;
+import util.VertexComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,14 +16,6 @@ import java.util.List;
  * is given in Tang e.a. (2016). Graph Stream Summarization: From Big Bang to Big Crunch
  */
 public class NodeQuery extends GraphQuery {
-
-    public enum Direction {
-        IN, OUT, UNDIRECTED;
-
-        public static Direction random() {
-            return Direction.values()[(int)((double)Direction.values().length * Math.random())];
-        }
-    }
 
     private final String nodeLabel;
     private final Direction direction;
@@ -56,7 +51,7 @@ public class NodeQuery extends GraphQuery {
             int bucketIndex = (int)graphSketch.getHash().hashToBin(this.nodeLabel);
 
             for (int i = 0; i < graphSketch.getAdjMatrix()[0].length; i++) {
-                switch (this.direction) {
+                switch (this.direction.getDirection()) {
                     case OUT:
                         currentWeight = graphSketch.getAdjMatrix()[bucketIndex][i];
                         break;
@@ -91,7 +86,7 @@ public class NodeQuery extends GraphQuery {
             String to = edge.getTo().getLabel();
             String from = edge.getFrom().getLabel();
 
-            switch (this.direction) {
+            switch (this.direction.getDirection()) {
                 case IN:
                     if (to != this.nodeLabel) {
                         continue;
@@ -137,12 +132,33 @@ public class NodeQuery extends GraphQuery {
             Float summaryResult = (Float)testQuery.executeQueryOnSummary();
             Float originalResult = (Float)testQuery.executeQueryOnOriginal();
             //System.out.println(String.format("Summary: %.4f; Original: %.4f", summaryResult, originalResult));
-            if (GraphQuery.assertAquality(summaryResult, originalResult)) {
+            if (GraphQuery.assertEquality(summaryResult, originalResult)) {
                 NrOfCorrectQueries++;
             }
         }
 
         return (float)NrOfCorrectQueries / (float)nrOfQueries;
+    }
+
+    public static float getAverageRelativeError(GraphSummary graphSummary, int nrOfQueries, Direction direction) {
+
+
+        return 0;
+    }
+
+    public static float getInterAccuracy(GraphSummary graphSummary, int nrOfQueries, Direction direction) {
+
+        List<Vertex> nodeListOriginal = new ArrayList<>(graphSummary.getGraph().getVertices().values());
+        List<Vertex> nodeIdListOriginal = new ArrayList<>();
+
+        Collections.sort(nodeListOriginal, new VertexComparator(direction, SortOrder.REVERSE));
+
+        for (int i = 0; i < nrOfQueries; i++) {
+            nodeIdListOriginal.add(nodeListOriginal.get(i).getLabel();
+            System.out.println(i + "th element weight original: " + nodeIdListOriginal.get(i).getWeight());
+        }
+
+        return 0;
     }
 
 }

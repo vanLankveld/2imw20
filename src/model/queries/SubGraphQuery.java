@@ -1,9 +1,6 @@
 package model.queries;
 
-import model.Edge;
-import model.GraphSketch;
-import model.GraphSummary;
-import model.Vertex;
+import model.*;
 
 import java.util.*;
 
@@ -13,11 +10,9 @@ import java.util.*;
  */
 public class SubGraphQuery extends GraphQuery {
 
+    private SubGraph subGraph;
 
-
-    Set<Pair<String>> subGraph;
-
-    public SubGraphQuery(GraphSummary graphSummary, Set<Pair<String>> subGraph) {
+    public SubGraphQuery(GraphSummary graphSummary, SubGraph subGraph) {
         super(graphSummary);
         this.subGraph = subGraph;
     }
@@ -28,8 +23,7 @@ public class SubGraphQuery extends GraphQuery {
 
         for (GraphSketch sketch : this.graphSummary.getGraphSketches()) {
             Integer currentWeight = 0;
-            for (Pair<String> pair : this.subGraph) {
-
+            for (Pair<String> pair : this.subGraph.getEdges()) {
                 int hashedA = (int)sketch.getHash().hashToBin(pair.getA());
                 int hashedB = (int)sketch.getHash().hashToBin(pair.getB());
 
@@ -52,7 +46,7 @@ public class SubGraphQuery extends GraphQuery {
     public Object executeQueryOnOriginal() {
         Integer weight = 0;
 
-        for (Pair<String> pair : this.subGraph) {
+        for (Pair<String> pair : this.subGraph.getEdges()) {
 
             Vertex vertexA = this.graphSummary.getGraph().getVertices().get(pair.getA());
 
@@ -78,25 +72,33 @@ public class SubGraphQuery extends GraphQuery {
 
         for (int i = 0; i < nrOfQueries; i++) {
 
-            Set<Pair<String>> subGraph = new HashSet<>();
+            SubGraph subGraph = new SubGraph();
 
             int subGraphSize = 1 + random.nextInt(subGraphUpperBound-1);
             for (int j = 0; j < subGraphSize; j++) {
                 Collections.shuffle(labels);
                 String a = labels.get(0);
                 String b = labels.get(1);
-                subGraph.add(new Pair<>(a, b));
+                subGraph.getEdges().add(new Pair<>(a, b));
             }
 
             GraphQuery testQuery = new SubGraphQuery(graphSummary, subGraph);
             Integer summaryResult = (Integer)testQuery.executeQueryOnSummary();
             Integer originalResult = (Integer)testQuery.executeQueryOnOriginal();
             //System.out.println(String.format("Summary: %.4f; Original: %.4f", summaryResult, originalResult));
-            if (GraphQuery.assertAquality(summaryResult, originalResult)) {
+            if (GraphQuery.assertEquality(summaryResult, originalResult)) {
                 NrOfCorrectQueries++;
             }
         }
 
         return (float)NrOfCorrectQueries / (float)nrOfQueries;
+    }
+
+    public static float getAverageRelativeError(GraphSummary graphSummary, int nrOfQueries) {
+        return 0;
+    }
+
+    public static float getInterAccuracy(GraphSummary graphSummary, int nrOfQueries) {
+        return 0;
     }
 }

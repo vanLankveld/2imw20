@@ -1,6 +1,8 @@
 package model.queries;
 
-public class Pair<T> {
+import beaver.Symbol;
+
+public class Pair<T> extends Symbol {
     private T a;
     private T b;
 
@@ -34,5 +36,10 @@ public class Pair<T> {
         int result = a != null ? a.hashCode() : 0;
         result = 31 * result + (b != null ? b.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(%s, %s)", this.a, this.b);
     }
 }

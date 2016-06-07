@@ -1,11 +1,12 @@
 package model.queries;
 
+import beaver.Symbol;
 import model.GraphSummary;
 
 /**
  * Abstract superclass for Queries that can be performed on a GraphSummary
  */
-public abstract class GraphQuery {
+public abstract class GraphQuery extends Symbol {
 
     protected GraphSummary graphSummary;
 
@@ -43,7 +44,7 @@ public abstract class GraphQuery {
         }
     }
 
-    public static boolean assertAquality(Object value1, Object value2) {
+    public static boolean assertEquality(Object value1, Object value2) {
         System.out.println("value1: "+value1);
         System.out.println("value2: "+value2);
         if(value1==value2){

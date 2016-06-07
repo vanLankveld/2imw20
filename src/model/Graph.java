@@ -41,12 +41,29 @@ public class Graph {
      * @param format
      */
     public Graph(Collection<String> edges, String delimiter, String format) {
+        this(edges, delimiter, format, edges.size());
+    }
+
+    /**
+     * Create a new graph with a limited number of edges based on a list of Strings, each representing a single edge.
+     * For CSV format, each edge-String should have the following format: fromVertex,toVertex,weight. With ',' being an arbitrary delimiter which can be specified as an argument
+     * For GT_GRAPH format, only lines starting with 'a' are considered as edge-String, they should have the following format: a fromVertex toVertex weight. With ' '(space) being an arbitrary delimiter which can be specified as an argument
+     *
+     * @param edges
+     * @param delimiter
+     * @param format
+     */
+    public Graph(Collection<String> edges, String delimiter, String format, int limit) {
         this.edges = new HashSet<>();
         this.vertices = new HashMap<>();
 
-        if (format.equals("CSV")) {
+        int i = 0;
 
+        if (format.equals("CSV")) {
             for (String s : edges) {
+                if (i >= limit) {
+                    break;
+                }
                 String[] split = s.split(delimiter);
                 if (split.length < 3) {
                     throw new IllegalArgumentException(String.format("Input data should be in the form of 'from %s to $s weight' (without quotes)", delimiter, delimiter));
@@ -70,6 +87,9 @@ public class Graph {
         } else if (format.equals("GT_GRAPH")) {
             for (String s : edges) {
                 if (s.startsWith("a ")) {
+                    if (i >= limit) {
+                        break;
+                    }
                     String[] split = s.split(delimiter);
 
                     if (split.length < 4) {
@@ -82,6 +102,8 @@ public class Graph {
 
                     Vertex from = this.getVertexByIdOrCreate(fromLabel);
                     Vertex to = this.getVertexByIdOrCreate(toLabel);
+                    from.setWeightOut(from.getWeightIn()+weight);
+                    to.setWeightOut(to.getWeightIn()+weight);
                     Edge edge = new Edge(from, to, weight);
                     from.addOutgoingEdgeTo(edge);
                     this.edges.add(edge);
