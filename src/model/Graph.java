@@ -60,6 +60,11 @@ public class Graph {
                 Vertex to = this.getVertexByIdOrCreate(toLabel);
                 Edge edge = new Edge(from, to, weight);
                 from.addOutgoingEdgeTo(edge);
+
+//Added reverse for undirected graph
+//                Edge edge_rev = new Edge(to, from, weight);
+//                to.addOutgoingEdgeTo(edge_rev);
+
                 this.edges.add(edge);
             }
         } else if (format.equals("GT_GRAPH")) {

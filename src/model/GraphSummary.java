@@ -19,6 +19,7 @@ public class GraphSummary {
     /**
      * Creates a new graphsummary of the given graph containing a given nr of sketches which all have a given number of bins
      * Each sketch uses a randomly generated hash seed
+     *
      * @param graph
      * @param nrOfSketches
      * @param nrOfBins
@@ -27,35 +28,38 @@ public class GraphSummary {
         this(graph, nrOfBins);
 
         Random rnd = new Random();
-
         for (int i = 0; i < nrOfSketches; i++) {
-            long seed = BigInteger.probablePrime(24, rnd).longValue();
-            System.out.println("Creating sketch: " + i+", seed: "+seed);
-            createSketch(seed);
+            long seed = BigInteger.probablePrime(16, rnd).longValue();
+            System.out.print("Creating sketch: " + i + "\t");
+            createSketch(seed, i);
         }
+        System.out.println();
     }
 
-    /**
-     * Creates a new graphsummary of the given graph containing a number of sketches which all have a given number of bins
-     * The specified seeds are used for each sketch. The number of generated sketches is equal to the number of provided seeds.
-     * @param graph
-     * @param nrOfBins
-     * @param seeds
-     */
-    public GraphSummary(Graph graph, int nrOfBins, long[] seeds) {
-        this(graph, nrOfBins);
-
-        for (int i = 0; i < seeds.length; i++) {
-            createSketch(seeds[i]);
-        }
-    }
+//    /**
+//     * Creates a new graphsummary of the given graph containing a number of sketches which all have a given number of bins
+//     * The specified seeds are used for each sketch. The number of generated sketches is equal to the number of provided seeds.
+//     *
+//     * @param graph
+//     * @param nrOfBins
+//     * @param seeds
+//     */
+//    public GraphSummary(Graph graph, int nrOfBins, long[] seeds) {
+//        this(graph, nrOfBins);
+//
+//        for (int i = 0; i < seeds.length; i++) {
+//            createSketch(seeds[i], i);
+//        }
+//    }
+//
 
     /**
      * Creates an empty graph summary
+     *
      * @param graph
      * @param nrOfBins
      */
-    private GraphSummary(Graph graph,  int nrOfBins) {
+    private GraphSummary(Graph graph, int nrOfBins) {
         this.graph = graph;
         this.nrOfBins = nrOfBins;
         this.graphSketches = new HashSet<>();
@@ -75,10 +79,11 @@ public class GraphSummary {
 
     /**
      * Creates a new GraphSketch and adds it to the set of sketches for this GraphSummary
+     *
      * @param seed
      */
-    public void createSketch(long seed) {
-        GraphSketch sketch = new GraphSketch(graph, new Hash(this.nrOfBins, seed));
+    public void createSketch(long seed, int index) {
+        GraphSketch sketch = new GraphSketch(graph, new Hash(this.nrOfBins, seed, index));
         this.graphSketches.add(sketch);
     }
 }

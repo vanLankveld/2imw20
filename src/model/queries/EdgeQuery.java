@@ -36,7 +36,7 @@ public class EdgeQuery extends GraphQuery {
 
             Integer weight = graphSketch.getAdjMatrix()[aHash][bHash];
 
-            System.out.println("\t\t\t\t\t\t\t\t\t\taHash: "+aHash+"  bHash: "+bHash);
+//            System.out.println("\t\t\t\t\t\t\t\t\t\taHash: "+aHash+"  bHash: "+bHash);
 //            System.out.println("Weight for sketch: "+weight);
             mergedWeight = mergeMinimum(mergedWeight, weight);
         }
@@ -119,7 +119,7 @@ public class EdgeQuery extends GraphQuery {
 
         for (int i = 0; i < k; i++) {
             edgeIdOriginalList.add(edgeListOriginal.get(i).getFrom().getLabel() + "|" + edgeListOriginal.get(i).getTo().getLabel());
-            System.out.println(i + "th element weight original: " + edgeListOriginal.get(i).getWeight());
+//            System.out.println(i + "th element weight original: " + edgeListOriginal.get(i).getWeight());
         }
 
         edgeListOriginal = null;
@@ -133,7 +133,7 @@ public class EdgeQuery extends GraphQuery {
 
         for (Edge edge : edgeSetOriginal) {
             counter += 1;
-            if (counter % 100000 == 0) {
+            if (counter % 1000000 == 0) {
                 System.out.println(counter);
             }
 
@@ -161,13 +161,13 @@ public class EdgeQuery extends GraphQuery {
         }
 
         for (Map.Entry<String, Integer> edgeEntry : edgeTop100Pool.entrySet()) {
-            System.out.println(edgeEntry.getKey() + " " + edgeEntry.getValue());
+//            System.out.println(edgeEntry.getKey() + " " + edgeEntry.getValue());
             edgeIdSummaryList.add(edgeEntry.getKey());
         }
 
 
         for (int i = 0; i < k; i++) {
-            System.out.println(i + "th element weight sketch: " + edgeIdSummaryList.get(i));
+//            System.out.println(i + "th element weight sketch: " + edgeIdSummaryList.get(i));
         }
 
         int countOfMatches = 0;
@@ -207,7 +207,7 @@ public class EdgeQuery extends GraphQuery {
             Set<Edge> outGoingEdges = aVertex.getOutgoingEdges();
 
             Random randomizer = new Random();
-            if(outGoingEdges.size()==0){
+            if (outGoingEdges.size() == 0) {
                 i--;
                 continue;
             }
@@ -225,7 +225,7 @@ public class EdgeQuery extends GraphQuery {
 
             String b = bVertex.getLabel();
 
-            System.out.println(b);
+//            System.out.println(b);
 
             GraphQuery testQuery = new EdgeQuery(graphSummary, a, b);
             Integer summaryResult = (Integer) testQuery.executeQueryOnSummary();
@@ -233,13 +233,13 @@ public class EdgeQuery extends GraphQuery {
                 summaryResult = 0;
             Integer originalResult = (Integer) testQuery.executeQueryOnOriginal();
 
-            System.out.println(summaryResult);
-            System.out.println(originalWeight);
-            System.out.println(originalResult);
+//            System.out.println(summaryResult);
+//            System.out.println(originalWeight);
+//            System.out.println(originalResult);
             Float relativeError = (float) summaryResult / (float) originalResult - 1;
             sumRelativeError += relativeError;
 
-            System.out.println("Query "+i+", relativeError: "+relativeError);
+//            System.out.println("Query "+i+", relativeError: "+relativeError);
         }
 
         return sumRelativeError / (float) nrOfQueries;
