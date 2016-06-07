@@ -97,6 +97,8 @@ public class Graph {
 
                     Vertex from = this.getVertexByIdOrCreate(fromLabel);
                     Vertex to = this.getVertexByIdOrCreate(toLabel);
+                    from.setWeightOut(from.getWeightIn()+weight);
+                    to.setWeightOut(to.getWeightIn()+weight);
                     Edge edge = new Edge(from, to, weight);
                     from.addOutgoingEdgeTo(edge);
                     this.edges.add(edge);

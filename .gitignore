@@ -1,3 +1,6 @@
 *.iml
 *.mf
+*.class
 .idea/
+out/
+dblp_co_authur.csv

@@ -3,6 +3,9 @@ package model.queries;
 import model.Edge;
 import model.GraphSketch;
 import model.GraphSummary;
+import model.Vertex;
+import util.SortOrder;
+import util.VertexComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -137,11 +140,24 @@ public class NodeQuery extends GraphQuery {
         return (float)NrOfCorrectQueries / (float)nrOfQueries;
     }
 
-    public static float getAverageRelativeError(GraphSummary graphSummary, int nrOfQueries) {
+    public static float getAverageRelativeError(GraphSummary graphSummary, int nrOfQueries, Direction direction) {
+
+
         return 0;
     }
 
-    public static float getInterAccuracy(GraphSummary graphSummary, int nrOfQueries) {
+    public static float getInterAccuracy(GraphSummary graphSummary, int nrOfQueries, Direction direction) {
+
+        List<Vertex> nodeListOriginal = new ArrayList<>(graphSummary.getGraph().getVertices().values());
+        List<Vertex> nodeIdListOriginal = new ArrayList<>();
+
+        Collections.sort(nodeListOriginal, new VertexComparator(direction, SortOrder.REVERSE));
+
+        for (int i = 0; i < nrOfQueries; i++) {
+            nodeIdListOriginal.add(nodeListOriginal.get(i).getLabel();
+            System.out.println(i + "th element weight original: " + nodeIdListOriginal.get(i).getWeight());
+        }
+
         return 0;
     }
 
