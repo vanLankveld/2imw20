@@ -150,13 +150,13 @@ public class NodeQuery extends GraphQuery {
 
         List<Vertex> nodeListOriginal = new ArrayList<>(graphSummary.getGraph().getVertices().values());
         List<Vertex> nodeIdListOriginal = new ArrayList<>();
-
-        Collections.sort(nodeListOriginal, new VertexComparator(direction, SortOrder.REVERSE));
-
-        for (int i = 0; i < nrOfQueries; i++) {
-            nodeIdListOriginal.add(nodeListOriginal.get(i).getLabel();
-            System.out.println(i + "th element weight original: " + nodeIdListOriginal.get(i).getWeight());
-        }
+//
+//        Collections.sort(nodeListOriginal, new VertexComparator(direction, SortOrder.REVERSE));
+//
+//        for (int i = 0; i < nrOfQueries; i++) {
+//            nodeIdListOriginal.add(nodeListOriginal.get(i).getLabel());
+//            System.out.println(i + "th element weight original: " + nodeIdListOriginal.get(i).getWeight());
+//        }
 
         return 0;
     }
