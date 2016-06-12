@@ -3,6 +3,7 @@
 package shell.parser;
 
 import beaver.Symbol;
+import shell.Shell;
 import beaver.Scanner;
 import shell.parser.TCMQueryParser.Terminals;
 

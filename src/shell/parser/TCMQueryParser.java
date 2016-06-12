@@ -169,8 +169,8 @@ public class TCMQueryParser extends Parser {
 			new Action() {	// [24] SubGraphBody = SubGraphEdge.e
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_e = _symbols[offset + 1];
-					final Pair<String> e = (Pair<String>) _symbol_e.value;
-					 Set<Pair<String>> b = new HashSet<>(); b.add(e); return new SubGraph(b);
+					final Pair<String, String> e = (Pair<String, String>) _symbol_e.value;
+					 Set<Pair<String, String>> b = new HashSet<>(); b.add(e); return new SubGraph(b);
 				}
 			},
 			new Action() {	// [25] SubGraphBody = SubGraphBody.b COMMA SubGraphEdge.e
@@ -178,7 +178,7 @@ public class TCMQueryParser extends Parser {
 					final Symbol _symbol_b = _symbols[offset + 1];
 					final SubGraph b = (SubGraph) _symbol_b.value;
 					final Symbol _symbol_e = _symbols[offset + 3];
-					final Pair<String> e = (Pair<String>) _symbol_e.value;
+					final Pair<String, String> e = (Pair<String, String>) _symbol_e.value;
 					 b.getEdges().add(e); return b;
 				}
 			},
@@ -188,7 +188,7 @@ public class TCMQueryParser extends Parser {
 					final String a = (String) _symbol_a.value;
 					final Symbol _symbol_b = _symbols[offset + 4];
 					final String b = (String) _symbol_b.value;
-					 return new Pair<String>(a, b);
+					 return new Pair<String, String>(a, b);
 				}
 			},
 			RETURN2,	// [27] BenchMarkCommand = BENCHMARK BenchMarkBody; returns 'BenchMarkBody' although none is marked

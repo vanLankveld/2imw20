@@ -40,7 +40,7 @@ public class Test {
         System.out.println();
         System.out.println("Creating summary...");
 
-        int[] nrBinsExp = new int[]{183, 196, 232, 259, 299, 366};
+        int[] nrBinsExp = new int[]{484};
 
         for (int nrBins : nrBinsExp) {
 

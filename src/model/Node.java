@@ -6,7 +6,7 @@ import java.util.Set;
 /**
  * Represents a single vertex (node) in a graph.
  */
-public class Vertex {
+public class Node {
     private String label;
     private Set<Edge> outgoingEdges;
     private int weightIn;
@@ -16,7 +16,7 @@ public class Vertex {
      * Creates a new vertex with the specified identifier and label
      * @param label
      */
-    public Vertex(String label) {
+    public Node(String label) {
         this.label = label;
         this.outgoingEdges = new HashSet<>();
         this.weightIn = 0;
@@ -49,5 +49,21 @@ public class Vertex {
 
     public void addOutgoingEdgeTo(Edge outgoing) {
         this.outgoingEdges.add(outgoing);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Node)) return false;
+
+        Node node = (Node) o;
+
+        return label != null ? label.equals(node.label) : node.label == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return label != null ? label.hashCode() : 0;
     }
 }

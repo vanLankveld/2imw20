@@ -1,7 +1,11 @@
 package model;
 
+import model.queries.Direction;
+import model.queries.GraphQuery;
+import model.queries.Pair;
 import util.Hash;
 
+import javax.rmi.CORBA.Util;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -81,6 +85,45 @@ public class GraphSketch {
             return;
         }
         this.adjMatrix[from][to] += weight;
+    }
+
+    public List<Pair<Integer, Integer>> getSortedWeights(Direction direction) {
+        List<Pair<Integer, Integer>> result = new ArrayList<>();
+        for (int i = 0; i < this.bins.size(); i++) {
+            int weight = 0;
+            switch (direction.getDirection()) {
+                case OUT:
+                    for (int j = 0; j < this.bins.size(); j++) {
+                        if (adjMatrix[i][j] == null) {
+                            continue;
+                        }
+                        weight += adjMatrix[i][j];
+                    }
+                    break;
+                case IN:
+                    for (int j = 0; j < this.bins.size(); j++) {
+                        if (adjMatrix[j][i] == null) {
+                            continue;
+                        }
+                        weight += adjMatrix[j][i];
+                    }
+                    break;
+                case UNDIRECTED:
+                    for (int j = 0; j < this.bins.size(); j++) {
+                        if (adjMatrix[j][i] == null) {
+                            continue;
+                        }
+                        weight += adjMatrix[j][i];
+                        if (adjMatrix[i][j] == null) {
+                            continue;
+                        }
+                        weight += adjMatrix[i][j];
+                    }
+                    break;
+            }
+            result.add(new Pair<>(i, weight));
+        }
+        return result;
     }
 
     @Override

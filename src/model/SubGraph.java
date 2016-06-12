@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 public class SubGraph extends Symbol {
-    private Set<Pair<String>> edges;
+    private Set<Pair<String, String>> edges;
 
-    public SubGraph(Set<Pair<String>> edges) {
+    public SubGraph(Set<Pair<String, String>> edges) {
         this.edges = edges;
     }
 
@@ -19,14 +19,14 @@ public class SubGraph extends Symbol {
         this(new HashSet<>());
     }
 
-    public Set<Pair<String>> getEdges() {
+    public Set<Pair<String, String>> getEdges() {
         return edges;
     }
 
     @Override
     public String toString() {
         List<String> edgesStringList = new ArrayList<>();
-        for (Pair<String> edge : this.edges) {
+        for (Pair<String, String> edge : this.edges) {
             edgesStringList.add(edge.toString());
         }
         String edgesString = String.join(",", edgesStringList);

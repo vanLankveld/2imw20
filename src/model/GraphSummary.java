@@ -1,11 +1,11 @@
 package model;
 
+import model.queries.Direction;
+import model.queries.Pair;
 import util.Hash;
 
 import java.math.BigInteger;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Contains a number of graphsketches
@@ -75,6 +75,26 @@ public class GraphSummary {
 
     public int getNrOfBins() {
         return nrOfBins;
+    }
+
+    public List<Pair<Integer, Integer>> getMergedWeightList(Direction direction) {
+        List<Pair<Integer, Integer>> result = new ArrayList<>();
+        Set<List<Pair<Integer, Integer>>> weightLists = new HashSet<>();
+
+        for (GraphSketch sketch : graphSketches) {
+            weightLists.add(sketch.getSortedWeights(direction));
+        }
+
+        for (int i = 0; i < nrOfBins; i++) {
+            Pair<Integer, Integer> smallest = null;
+            for (List<Pair<Integer, Integer>> weights : weightLists) {
+                if (smallest == null || weights.get(i).getB() < smallest.getB()) {
+                    smallest = weights.get(i);
+                }
+            }
+            result.add(smallest);
+        }
+        return result;
     }
 
     /**

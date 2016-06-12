@@ -8,7 +8,7 @@ import java.util.*;
 public class Graph {
 
     private Set<Edge> edges;
-    private Map<String, Vertex> vertices;
+    private Map<String, Node> vertices;
 
     /**
      * Create a new graph based on a list of Strings, each representing a single edge.
@@ -73,8 +73,10 @@ public class Graph {
                 String toLabel = split[1];
                 int weight = Integer.parseInt(split[2]);
 
-                Vertex from = this.getVertexByIdOrCreate(fromLabel);
-                Vertex to = this.getVertexByIdOrCreate(toLabel);
+                Node from = this.getVertexByIdOrCreate(fromLabel);
+                Node to = this.getVertexByIdOrCreate(toLabel);
+                from.setWeightOut(from.getWeightIn()+weight);
+                to.setWeightOut(to.getWeightIn()+weight);
                 Edge edge = new Edge(from, to, weight);
                 from.addOutgoingEdgeTo(edge);
 
@@ -100,8 +102,8 @@ public class Graph {
                     String toLabel = split[2];
                     int weight = Integer.parseInt(split[3]);
 
-                    Vertex from = this.getVertexByIdOrCreate(fromLabel);
-                    Vertex to = this.getVertexByIdOrCreate(toLabel);
+                    Node from = this.getVertexByIdOrCreate(fromLabel);
+                    Node to = this.getVertexByIdOrCreate(toLabel);
                     from.setWeightOut(from.getWeightIn()+weight);
                     to.setWeightOut(to.getWeightIn()+weight);
                     Edge edge = new Edge(from, to, weight);
@@ -119,7 +121,7 @@ public class Graph {
         return edges;
     }
 
-    public Map<String, Vertex> getVertices() {
+    public Map<String, Node> getVertices() {
         return vertices;
     }
 
@@ -130,11 +132,11 @@ public class Graph {
      * @param label
      * @return
      */
-    private Vertex getVertexByIdOrCreate(String label) {
+    private Node getVertexByIdOrCreate(String label) {
         if (this.vertices.containsKey(label)) {
             return vertices.get(label);
         }
-        Vertex vertex = new Vertex(label);
+        Node vertex = new Node(label);
         this.vertices.put(vertex.getLabel(), vertex);
         return vertex;
     }
@@ -145,7 +147,7 @@ public class Graph {
 
         outerSB.append("Graph as adjacency list: ");
         outerSB.append(System.lineSeparator());
-        for (Vertex vertex : this.vertices.values()) {
+        for (Node vertex : this.vertices.values()) {
             StringBuilder innerSB = new StringBuilder();
             innerSB.append(vertex.getLabel());
             innerSB.append(" {");
