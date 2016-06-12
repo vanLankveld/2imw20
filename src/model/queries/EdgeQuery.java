@@ -197,8 +197,6 @@ public class EdgeQuery extends GraphQuery {
      * @return
      */
     public static float getAverageRelativeError(GraphSummary graphSummary, int nrOfQueries) {
-        int NrOfCorrectQueries = 0;
-
         List<String> labels = new ArrayList<>(graphSummary.getGraph().getVertices().keySet());
 
         Float sumRelativeError = 0f;
