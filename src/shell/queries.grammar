@@ -20,7 +20,7 @@
 %typeof GraphQuery, EdgeQuery, NodeQuery, PathQuery, SubGraphQuery = "GraphQuery";
 %typeof Direction = "Direction";
 %typeof SubGraph, SubGraphBody = "SubGraph";
-%typeof SubGraphEdge = "Pair<String>";
+%typeof SubGraphEdge = "Pair<String, String>";
 %typeof NUMBER = "int";
 %typeof STRING = "String";
 
@@ -61,11 +61,11 @@ Direction   = DIR_IN {: return new Direction(Direction.DirectionEnum.IN); :}
 
 SubGraph    = BRACE_OPEN SubGraphBody.b BRACE_CLOSE {: return b; :};
 
-SubGraphBody    = SubGraphEdge.e {: Set<Pair<String>> b = new HashSet<>(); b.add(e); return new SubGraph(b); :}
+SubGraphBody    = SubGraphEdge.e {: Set<Pair<String, String>> b = new HashSet<>(); b.add(e); return new SubGraph(b); :}
                 | SubGraphBody.b COMMA SubGraphEdge.e {: b.getEdges().add(e); return b; :}
                 ;
 
-SubGraphEdge    = PAR_OPEN STRING.a COMMA STRING.b PAR_CLOSE {: return new Pair<String>(a, b); :};
+SubGraphEdge    = PAR_OPEN STRING.a COMMA STRING.b PAR_CLOSE {: return new Pair<String, String>(a, b); :};
 
 BenchMarkCommand    = BENCHMARK BenchMarkBody;
 

@@ -4,8 +4,8 @@ package model;
  * Represents a single directed edge in a graph
  */
 public class Edge implements Comparable<Edge> {
-    private Vertex from;
-    private Vertex to;
+    private Node from;
+    private Node to;
     private int weight;
 
     /**
@@ -15,7 +15,7 @@ public class Edge implements Comparable<Edge> {
      * @param to
      * @param weight
      */
-    public Edge(Vertex from, Vertex to, int weight) {
+    public Edge(Node from, Node to, int weight) {
         this.from = from;
         this.to = to;
         this.weight = weight;
@@ -35,7 +35,7 @@ public class Edge implements Comparable<Edge> {
      *
      * @return
      */
-    public Vertex getFrom() {
+    public Node getFrom() {
         return from;
     }
 
@@ -44,7 +44,7 @@ public class Edge implements Comparable<Edge> {
      *
      * @return
      */
-    public Vertex getTo() {
+    public Node getTo() {
         return to;
     }
 

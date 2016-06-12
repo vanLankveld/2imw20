@@ -23,7 +23,7 @@ public class SubGraphQuery extends GraphQuery {
 
         for (GraphSketch sketch : this.graphSummary.getGraphSketches()) {
             Integer currentWeight = 0;
-            for (Pair<String> pair : this.subGraph.getEdges()) {
+            for (Pair<String, String> pair : this.subGraph.getEdges()) {
                 int hashedA = (int)sketch.getHash().hashToBin(pair.getA());
                 int hashedB = (int)sketch.getHash().hashToBin(pair.getB());
 
@@ -46,9 +46,9 @@ public class SubGraphQuery extends GraphQuery {
     public Object executeQueryOnOriginal() {
         Integer weight = 0;
 
-        for (Pair<String> pair : this.subGraph.getEdges()) {
+        for (Pair<String, String> pair : this.subGraph.getEdges()) {
 
-            Vertex vertexA = this.graphSummary.getGraph().getVertices().get(pair.getA());
+            Node vertexA = this.graphSummary.getGraph().getVertices().get(pair.getA());
 
             for (Edge edge : vertexA.getOutgoingEdges()) {
                 if (edge.getTo().getLabel().equals(pair.getB())) {

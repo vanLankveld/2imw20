@@ -1,15 +1,12 @@
 package model.queries;
 
-import model.Edge;
-import model.GraphSketch;
-import model.GraphSummary;
-import model.Vertex;
+import model.*;
+import util.PairComparator;
 import util.SortOrder;
 import util.VertexComparator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import javax.jnlp.IntegrationService;
+import java.util.*;
 
 /**
  * Used to perform an aggregated node query given a single node label and a direction. The specification for such a query
@@ -45,41 +42,53 @@ public class NodeQuery extends GraphQuery {
     public Object executeQueryOnSummary() {
 
         Integer mergedWeight = null;
-        Integer currentWeight;
+        Integer currentWeight = 0;
 
-        for (GraphSketch graphSketch : this.graphSummary.getGraphSketches()) {
-            int bucketIndex = (int)graphSketch.getHash().hashToBin(this.nodeLabel);
+        Integer currentBucket = null;
 
-            for (int i = 0; i < graphSketch.getAdjMatrix()[0].length; i++) {
-                switch (this.direction.getDirection()) {
-                    case OUT:
-                        currentWeight = graphSketch.getAdjMatrix()[bucketIndex][i];
-                        break;
-                    case IN:
-                        currentWeight = graphSketch.getAdjMatrix()[i][bucketIndex];
-                        break;
-                    default:
-                        if (graphSketch.getAdjMatrix()[bucketIndex][i] == null) {
-                            currentWeight = graphSketch.getAdjMatrix()[i][bucketIndex];
-                        }
-                        else if (graphSketch.getAdjMatrix()[i][bucketIndex] == null) {
-                            currentWeight = graphSketch.getAdjMatrix()[i][bucketIndex];
-                        }
-                        else {
-                            currentWeight = Math.min(graphSketch.getAdjMatrix()[bucketIndex][i], graphSketch.getAdjMatrix()[i][bucketIndex]);
-                        }
-                        break;
+        for (GraphSketch sketch : this.graphSummary.getGraphSketches()) {
+            Integer summedWeightOut = 0;
+            Integer summedWeightIn = 0;
+            Integer bucket = (int)sketch.getHash().hashToBin(nodeLabel);
+
+            if (this.direction.getDirection() == Direction.DirectionEnum.OUT ||
+                    this.direction.getDirection() == Direction.DirectionEnum.UNDIRECTED) {
+                for (int i = 0; i < this.graphSummary.getNrOfBins(); i++) {
+                    Integer weight = sketch.getAdjMatrix()[bucket][i];
+                    if (weight != null) {
+                        summedWeightOut += weight;
+                    }
                 }
-                mergedWeight = this.mergeMinimum(mergedWeight, currentWeight);
+                currentWeight += summedWeightOut;
+            }
+            if (this.direction.getDirection() == Direction.DirectionEnum.IN ||
+                    this.direction.getDirection() == Direction.DirectionEnum.UNDIRECTED) {
+                for (int i = 0; i < this.graphSummary.getNrOfBins(); i++) {
+                    Integer weight = sketch.getAdjMatrix()[i][bucket];
+                    if (weight != null) {
+                        summedWeightIn += weight;
+                    }
+                }
+                currentWeight += summedWeightIn;
+            }
+
+            mergedWeight = this.mergeMinimum(mergedWeight, currentWeight);
+            if (mergedWeight != currentWeight) {
+                currentBucket = bucket;
             }
         }
-        return mergedWeight;
+
+        if (mergedWeight == null) {
+            mergedWeight = 0;
+        }
+
+        return new Pair<>(currentBucket, mergedWeight);
     }
 
     @Override
     public Object executeQueryOnOriginal() {
 
-        Integer mergedWeight = null;
+        Integer mergedWeight = 0;
 
         for (Edge edge : this.graphSummary.getGraph().getEdges()) {
 
@@ -88,22 +97,26 @@ public class NodeQuery extends GraphQuery {
 
             switch (this.direction.getDirection()) {
                 case IN:
-                    if (to != this.nodeLabel) {
+                    if (!to.equals(this.nodeLabel)) {
                         continue;
                     }
                     break;
                 case OUT:
-                    if (from != this.nodeLabel) {
+                    if (!from.equals(this.nodeLabel)) {
                         continue;
                     }
                     break;
-                default:
-                    if (from != this.nodeLabel && to != this.nodeLabel) {
+                case UNDIRECTED:
+                    if (!from.equals(this.nodeLabel) && !to.equals(this.nodeLabel)) {
                         continue;
                     }
                     break;
             }
-            mergedWeight = this.mergeMinimum(mergedWeight, edge.getWeight());
+            mergedWeight += edge.getWeight();
+        }
+
+        if (mergedWeight == null) {
+            mergedWeight = 0;
         }
 
         return mergedWeight;
@@ -141,24 +154,85 @@ public class NodeQuery extends GraphQuery {
     }
 
     public static float getAverageRelativeError(GraphSummary graphSummary, int nrOfQueries, Direction direction) {
+        List<Edge> edges = new ArrayList<>(graphSummary.getGraph().getEdges());
 
+        Float sumRelativeError = 0f;
 
-        return 0;
+        for (int i = 0; i < nrOfQueries; i++) {
+            Collections.shuffle(edges);
+            Edge edge = edges.get(0);
+            String label;
+
+            if (direction.getDirection() == Direction.DirectionEnum.IN) {
+                label = edge.getTo().getLabel();
+            }
+            else if (direction.getDirection() == Direction.DirectionEnum.OUT) {
+                label = edge.getFrom().getLabel();
+            }
+            else {
+                if (Math.random() > 0.5) {
+                    label = edge.getFrom().getLabel();
+                }
+                else {
+                    label = edge.getTo().getLabel();
+                }
+            }
+
+            GraphQuery query = new NodeQuery(graphSummary, label, direction);
+
+            Integer summarizedResult = ((Pair<Integer, Integer>)query.executeQueryOnSummary()).getB();
+            Integer originalResult = (Integer)query.executeQueryOnOriginal();
+
+            sumRelativeError += (((float)summarizedResult / (float)originalResult) - 1);
+        }
+
+        return sumRelativeError / (float)nrOfQueries;
     }
 
-    public static float getInterAccuracy(GraphSummary graphSummary, int nrOfQueries, Direction direction) {
+    public static float getInterAccuracy(GraphSummary graphSummary, int k, Direction direction) {
 
-        List<Vertex> nodeListOriginal = new ArrayList<>(graphSummary.getGraph().getVertices().values());
-        List<Vertex> nodeIdListOriginal = new ArrayList<>();
-//
-//        Collections.sort(nodeListOriginal, new VertexComparator(direction, SortOrder.REVERSE));
-//
-//        for (int i = 0; i < nrOfQueries; i++) {
-//            nodeIdListOriginal.add(nodeListOriginal.get(i).getLabel());
-//            System.out.println(i + "th element weight original: " + nodeIdListOriginal.get(i).getWeight());
-//        }
+        List<Node> nodeListOriginal = new ArrayList<>(graphSummary.getGraph().getVertices().values());
+        List<Integer> topKOriginal = new ArrayList<>();
 
-        return 0;
+
+        Collections.sort(nodeListOriginal, new VertexComparator(direction, SortOrder.REVERSE));
+
+        for (int i = 0; i < k; i++) {
+            Node n = nodeListOriginal.get(i);
+
+            GraphQuery query = new NodeQuery(graphSummary, n.getLabel(), direction);
+            Pair<Integer, Integer> queryResult = (Pair<Integer, Integer>)query.executeQueryOnSummary();
+            topKOriginal.add(queryResult.getA());
+            int weight = 0;
+            switch (direction.getDirection()) {
+                case IN:
+                    weight = n.getWeightIn();
+                    break;
+                case OUT:
+                    weight = n.getWeightOut();
+                    break;
+                case UNDIRECTED:
+                    weight = n.getWeightIn() + n.getWeightOut();
+                    break;
+            }
+            System.out.println(i + "th element weight original: " + weight);
+        }
+
+        System.gc();
+
+        List<Pair<Integer, Integer>> summarizedWeights = graphSummary.getMergedWeightList(direction);
+        Collections.sort(summarizedWeights, new PairComparator(PairComparator.CompareOn.RIGHT, SortOrder.REVERSE));
+
+        List<Integer> topKSummarized = new ArrayList<>();
+        for (int i = 0; i < k; i++) {
+            topKSummarized.add(summarizedWeights.get(i).getA());
+        }
+
+        System.gc();
+
+        topKSummarized.retainAll(topKOriginal);
+
+        return (float)topKSummarized.size() / (float)k;
     }
 
 }

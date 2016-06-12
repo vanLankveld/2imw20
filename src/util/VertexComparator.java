@@ -1,9 +1,8 @@
 package util;
 
-import model.Vertex;
+import model.Node;
 import model.queries.Direction;
 
-import java.util.Collections;
 import java.util.Comparator;
 
 /**
@@ -21,13 +20,13 @@ public class VertexComparator implements Comparator {
 
     @Override
     public int compare(Object o1, Object o2) {
-        if (!(o1 instanceof Vertex && o2 instanceof Vertex))
+        if (!(o1 instanceof Node && o2 instanceof Node))
         {
             return 0;
         }
 
-        Vertex v1 = (Vertex)o1;
-        Vertex v2 = (Vertex)o2;
+        Node v1 = (Node)o1;
+        Node v2 = (Node)o2;
 
         int returnValue = 0;
 

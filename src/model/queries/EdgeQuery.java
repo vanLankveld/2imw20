@@ -47,7 +47,7 @@ public class EdgeQuery extends GraphQuery {
     @Override
     public Object executeQueryOnOriginal() {
         Graph graph = super.graphSummary.getGraph();
-        Vertex aVertex = graph.getVertices().get(this.labelA);
+        Node aVertex = graph.getVertices().get(this.labelA);
         Integer mergedWeight = null;
 
         if (aVertex == null) {
@@ -55,7 +55,7 @@ public class EdgeQuery extends GraphQuery {
         }
 
         for (Edge aOut : aVertex.getOutgoingEdges()) {
-            Vertex bVertex = aOut.getTo();
+            Node bVertex = aOut.getTo();
             if (this.labelB.equals(bVertex.getLabel())) {
                 mergedWeight = mergeMinimum(mergedWeight, aOut.getWeight());
             }
@@ -199,8 +199,6 @@ public class EdgeQuery extends GraphQuery {
      * @return
      */
     public static float getAverageRelativeError(GraphSummary graphSummary, int nrOfQueries) {
-        int NrOfCorrectQueries = 0;
-
         List<String> labels = new ArrayList<>(graphSummary.getGraph().getVertices().keySet());
 
         Float sumRelativeError = 0f;
@@ -208,7 +206,7 @@ public class EdgeQuery extends GraphQuery {
         for (int i = 0; i < nrOfQueries; i++) {
             Collections.shuffle(labels);
             String a = labels.get(0);
-            Vertex aVertex = graphSummary.getGraph().getVertices().get(a);
+            Node aVertex = graphSummary.getGraph().getVertices().get(a);
             Set<Edge> outGoingEdges = aVertex.getOutgoingEdges();
 
             Random randomizer = new Random();
@@ -225,7 +223,7 @@ public class EdgeQuery extends GraphQuery {
                 ii = ii + 1;
             }
 
-            Vertex bVertex = theRandomEdge.getTo();
+            Node bVertex = theRandomEdge.getTo();
             Integer originalWeight = theRandomEdge.getWeight();
 
             String b = bVertex.getLabel();

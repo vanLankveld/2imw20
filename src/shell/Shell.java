@@ -34,7 +34,10 @@ public class Shell {
             e.printStackTrace();
         }
         Graph graph = new Graph(lines, delimiter, graphtype);
+        lines = null;
+        System.gc();
         graphSummary = new GraphSummary(graph, numberOfSketches, nrOfBins);
+        System.gc();
         output("Done");
     }
 
@@ -72,8 +75,8 @@ public class Shell {
 
     public static void BenchmarkNodeQuery(int n) {
         output(String.format("Benchmarking NodeQuery with number of queries=%s", n));
-        output(String.format("Inter accuracy of NodeQuery: %.4f", NodeQuery.getInterAccuracy(graphSummary, n)));
-        output(String.format("Average relative error of NodeQuery: %.4f", NodeQuery.getAverageRelativeError(graphSummary, n)));
+        output(String.format("Inter accuracy of NodeQuery: %.4f", NodeQuery.getInterAccuracy(graphSummary, n, new Direction(Direction.DirectionEnum.UNDIRECTED))));
+        output(String.format("Average relative error of NodeQuery: %.4f", NodeQuery.getAverageRelativeError(graphSummary, n, new Direction(Direction.DirectionEnum.UNDIRECTED))));
     }
 
     public static void BenchmarkPathQuery(int n) {

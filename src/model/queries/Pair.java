@@ -2,11 +2,11 @@ package model.queries;
 
 import beaver.Symbol;
 
-public class Pair<T> extends Symbol {
+public class Pair<T extends Comparable, S extends Comparable> extends Symbol {
     private T a;
-    private T b;
+    private S b;
 
-    public Pair(T a, T b) {
+    public Pair(T a, S b) {
         this.a = a;
         this.b = b;
     }
@@ -15,7 +15,7 @@ public class Pair<T> extends Symbol {
         return a;
     }
 
-    public T getB() {
+    public S getB() {
         return b;
     }
 
@@ -24,7 +24,7 @@ public class Pair<T> extends Symbol {
         if (this == o) return true;
         if (!(o instanceof Pair)) return false;
 
-        Pair<?> pair = (Pair<?>) o;
+        Pair<?,?> pair = (Pair<?,?>) o;
 
         if (a != null ? !a.equals(pair.a) : pair.a != null) return false;
         return b != null ? b.equals(pair.b) : pair.b == null;
