@@ -154,13 +154,30 @@ public class NodeQuery extends GraphQuery {
     }
 
     public static float getAverageRelativeError(GraphSummary graphSummary, int nrOfQueries, Direction direction) {
-        List<String> labels = new ArrayList<>(graphSummary.getGraph().getVertices().keySet());
+        List<Edge> edges = new ArrayList<>(graphSummary.getGraph().getEdges());
 
         Float sumRelativeError = 0f;
 
         for (int i = 0; i < nrOfQueries; i++) {
-            Collections.shuffle(labels);
-            String label = labels.get(0);
+            Collections.shuffle(edges);
+            Edge edge = edges.get(0);
+            String label;
+
+            if (direction.getDirection() == Direction.DirectionEnum.IN) {
+                label = edge.getTo().getLabel();
+            }
+            else if (direction.getDirection() == Direction.DirectionEnum.OUT) {
+                label = edge.getFrom().getLabel();
+            }
+            else {
+                if (Math.random() > 0.5) {
+                    label = edge.getFrom().getLabel();
+                }
+                else {
+                    label = edge.getTo().getLabel();
+                }
+            }
+
             GraphQuery query = new NodeQuery(graphSummary, label, direction);
 
             Integer summarizedResult = ((Pair<Integer, Integer>)query.executeQueryOnSummary()).getB();
