@@ -1,7 +1,10 @@
 package model.queries;
 
 import model.*;
+import sun.jvm.hotspot.ui.tree.FloatTreeNodeAdapter;
+import util.DiceRoll;
 
+import javax.management.Query;
 import java.util.*;
 
 /**
@@ -136,11 +139,54 @@ public class PathQuery extends GraphQuery {
         return (float)NrOfCorrectQueries / (float)nrOfQueries;
     }
 
-    public static float getAverageRelativeError(GraphSummary graphSummary, int nrOfQueries) {
-        return 0;
-    }
+    /**
+     * Returns two floats, the first is the total inter accuracy, the second is the false negatives ratio
+     * @param graphSummary
+     * @param nrOfQueries
+     * @return
+     */
+    public static float[] getInterAccuracy(GraphSummary graphSummary, int nrOfQueries) {
+        List<Node> nodes = new ArrayList<>(graphSummary.getGraph().getVertices().values());
+        Collections.shuffle(nodes);
 
-    public static float getInterAccuracy(GraphSummary graphSummary, int nrOfQueries) {
-        return 0;
+        int positives = 0;
+        int negatives = 0;
+        int truePositives = 0;
+        int trueNegatives = 0;
+
+        for (int i = 0; i < 2*nrOfQueries; i+=2) {
+            Node start = nodes.get(i);
+            Node end;
+
+            if (!start.getOutgoingEdges().isEmpty()) {
+                end = DiceRoll.randomOutGoingEdge(start).getTo();
+                while(DiceRoll.booleanRoll() && !end.getOutgoingEdges().isEmpty()) {
+                    end = DiceRoll.randomOutGoingEdge(end).getTo();
+                }
+            }
+            else {
+                end = nodes.get(i+1);
+            }
+
+            GraphQuery query = new PathQuery(graphSummary, start.getLabel(), end.getLabel());
+
+            if ((boolean)query.executeQueryOnOriginal()) {
+                positives++;
+                if ((boolean)query.executeQueryOnSummary()) {
+                    truePositives++;
+                }
+            }
+            else {
+                negatives++;
+                if (!(boolean)query.executeQueryOnSummary()) {
+                    trueNegatives++;
+                }
+            }
+        }
+
+        return new float[]{
+                (float)(truePositives+trueNegatives) / (float)nrOfQueries,
+                1-((float)trueNegatives / (float)negatives)
+        };
     }
 }

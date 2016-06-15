@@ -81,8 +81,10 @@ public class Shell {
 
     public static void BenchmarkPathQuery(int n) {
         output(String.format("Benchmarking PathQuery with number of queries=%s", n));
-        output(String.format("Inter accuracy of PathQuery: %.4f", PathQuery.getInterAccuracy(graphSummary, n)));
-        output(String.format("Average relative error of PathQuery: %.4f", PathQuery.getAverageRelativeError(graphSummary, n)));
+        float[] result = PathQuery.getInterAccuracy(graphSummary, n);
+        output("Inter accuracy of PathQuery:");
+        output(String.format("Inter accuracy: %.4f", result[0]));
+        output(String.format("False negatives: %.4f", result[1]));
     }
 
     public static void showSummary() {
