@@ -2,9 +2,6 @@ package model.queries;
 
 import model.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.*;
 
 /**
@@ -117,12 +114,15 @@ public class EdgeQuery extends GraphQuery {
             edgeListOriginal.add(edge);
         }
 
+        System.out.println("Calculating top k edges from " + edgeListOriginal.size() + " original edges");
+
         Collections.sort(edgeListOriginal, Collections.reverseOrder());
 
 
+        System.out.println("Top original edges: ");
         for (int i = 0; i < k; i++) {
             edgeIdOriginalList.add(edgeListOriginal.get(i).getFrom().getLabel() + "|" + edgeListOriginal.get(i).getTo().getLabel());
-//            System.out.println(i + "th element weight original: " + edgeListOriginal.get(i).getWeight());
+            System.out.println(edgeListOriginal.get(i).getFrom().getLabel() + "|" + edgeListOriginal.get(i).getTo().getLabel() + "\t" + edgeListOriginal.get(i).getWeight());
         }
 
         edgeListOriginal = null;
@@ -134,6 +134,8 @@ public class EdgeQuery extends GraphQuery {
 
         int counter = 0;
 
+        System.out.println("Calculating edge sketches weights for " + edgeSetOriginal.size() + " original edges");
+
         for (Edge edge : edgeSetOriginal) {
             counter += 1;
             if (counter % 1000000 == 0) {
@@ -144,7 +146,7 @@ public class EdgeQuery extends GraphQuery {
             Integer weight = (Integer) edgeQuery.executeQueryOnSummary();
 
             String minKey = "";
-            int minWeight = 1000000;
+            int minWeight = Integer.MAX_VALUE;
             if (edgeTop100Pool.size() >= k) {
                 for (Map.Entry<String, Integer> edgeEntry : edgeTop100Pool.entrySet()) {
                     if (edgeEntry.getValue() < minWeight) {
@@ -164,7 +166,7 @@ public class EdgeQuery extends GraphQuery {
         }
 
         for (Map.Entry<String, Integer> edgeEntry : edgeTop100Pool.entrySet()) {
-//            System.out.println(edgeEntry.getKey() + " " + edgeEntry.getValue());
+            System.out.println(edgeEntry.getKey() + " " + edgeEntry.getValue());
             edgeIdSummaryList.add(edgeEntry.getKey());
         }
 

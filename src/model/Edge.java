@@ -22,6 +22,15 @@ public class Edge implements Comparable<Edge> {
     }
 
     /**
+     * Add weight to the existing edge
+     *
+     * @param weightToMerge
+     */
+    public void addWeight(int weightToMerge) {
+        this.weight += weightToMerge;
+    }
+
+    /**
      * Gets the source vertex
      *
      * @return
@@ -55,7 +64,7 @@ public class Edge implements Comparable<Edge> {
 
         Edge edge = (Edge) o;
 
-        if (Float.compare(edge.weight, weight) != 0) return false;
+//        if (Float.compare(edge.weight, weight) != 0) return false;
         if (!from.equals(edge.from)) return false;
         return to.equals(edge.to);
 
@@ -65,7 +74,7 @@ public class Edge implements Comparable<Edge> {
     public int hashCode() {
         int result = from.hashCode();
         result = 31 * result + to.hashCode();
-        result = 31 * result + (weight != +0.0f ? Float.floatToIntBits(weight) : 0);
+//        result = 31 * result + (weight != +0.0f ? Float.floatToIntBits(weight) : 0);
         return result;
     }
 

@@ -1,6 +1,8 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,6 +16,7 @@ public class Node {
 
     /**
      * Creates a new vertex with the specified identifier and label
+     *
      * @param label
      */
     public Node(String label) {
@@ -48,7 +51,16 @@ public class Node {
     }
 
     public void addOutgoingEdgeTo(Edge outgoing) {
-        this.outgoingEdges.add(outgoing);
+        if (outgoingEdges.contains(outgoing)) {
+            List<Edge> outgoingEdgesList = new ArrayList<Edge>(outgoingEdges);
+
+            Edge existingEdge = outgoingEdgesList.get(outgoingEdgesList.indexOf(outgoing));
+            existingEdge.addWeight(outgoing.getWeight());
+            this.outgoingEdges.remove(outgoing);
+            this.outgoingEdges.add(existingEdge);
+        } else {
+            this.outgoingEdges.add(outgoing);
+        }
     }
 
     @Override

@@ -1,5 +1,10 @@
 package util;
 
+import net.jpountz.xxhash.StreamingXXHash32;
+import net.jpountz.xxhash.XXHashFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
@@ -15,6 +20,8 @@ public class Hash {
     private int[] hashRand;
     private long LONG_PRIME = 32993;
     private int RAND_MAX = 32767;
+    StreamingXXHash32 hash32;
+    XXHashFactory factory;
 
     public int getIndex() {
         return index;
@@ -37,6 +44,9 @@ public class Hash {
         this.hashRand = new int[2];
         this.hashRand[0] = (int) ((float) (new Random().nextInt(RAND_MAX)) * (float) (LONG_PRIME) / (float) (RAND_MAX) + 1);
         this.hashRand[1] = (int) ((float) (new Random().nextInt(RAND_MAX)) * (float) (LONG_PRIME) / (float) (RAND_MAX) + 1);
+        factory = XXHashFactory.fastestInstance();
+//        hash32 = factory.newStreamingHash32(hashRand[1]);
+        System.out.println("Hash seed for sketch " + index + ": " + hashRand[0] + ", " + hashRand[1]);
     }
 
 //    /**
@@ -80,26 +90,26 @@ public class Hash {
 
     //Using hash in c++ countmin
 //    public long hashToBin(String str) {
-//        long hashval = Long.parseLong(str);
+//        long hashval = hashstr(str);
 //        long hashBin = (hashRand[0] * hashval + hashRand[1]) % nrOfBins;
 //        return hashBin;
 //    }
 
-//    int hash(long item, int i) {
-//        long hash = hashRand[0] * item;
-//        // A super fast way of computing x mod 2^p-1
-//        // See http://www.cs.princeton.edu/courses/archive/fall09/cos521/Handouts/universalclasses.pdf
-//        // page 149, right after Proposition 7.
-//        hash += hash >> 32;
-//        hash &= PRIME_MODULUS;
-//        // Doing "%" after (int) conversion is ~2x faster than %'ing longs.
-//        return ((int) hash) % nrOfBins;
-//    }
+    int hash(long item, int i) {
+        long hash = hashRand[0] * item;
+        // A super fast way of computing x mod 2^p-1
+        // See http://www.cs.princeton.edu/courses/archive/fall09/cos521/Handouts/universalclasses.pdf
+        // page 149, right after Proposition 7.
+        hash += hash >> 32;
+        hash &= PRIME_MODULUS;
+        // Doing "%" after (int) conversion is ~2x faster than %'ing longs.
+        return ((int) hash) % nrOfBins;
+    }
 
 
     //Using Murmur hashing
     public long hashToBin(String str) {
-        return getHashBuckets(str,index,nrOfBins);
+        return getHashBuckets(str, index, nrOfBins);
     }
 
     // Murmur is faster than an SHA-based approach and provides as-good collision
@@ -122,5 +132,36 @@ public class Hash {
         int hash2 = MurmurHash.hash(b, b.length, hash1);
         return Math.abs((hash1 + index * hash2) % max);
     }
+
+
+    public int getHashXX(String string) {
+        hash32 = factory.newStreamingHash32(hashRand[1]);
+        byte[] data = new byte[0];
+        try {
+            data = string.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        ByteArrayInputStream in = new ByteArrayInputStream(data);
+        byte[] buf = new byte[8192]; // for real-world usage, use a larger buffer, like 8192 bytes
+        for (; ; ) {
+            int read = 0;
+            try {
+                read = in.read(buf);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (read == -1) {
+                break;
+            }
+            hash32.update(buf, 0, read);
+        }
+        int hash = hash32.getValue();
+        return hash;
+    }
+
+//    public long hashToBin(String str) {
+//        return Math.abs(getHashXX(str) % nrOfBins);
+//    }
 
 }
