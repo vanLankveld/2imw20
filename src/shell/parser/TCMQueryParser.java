@@ -32,8 +32,8 @@ public class TCMQueryParser extends Parser {
 		static public final short SHOWSUMMARY = 10;
 		static public final short EDGE = 11;
 		static public final short PATH = 12;
-		static public final short SUBGRAPH = 13;
-		static public final short NODE = 14;
+		static public final short NODE = 13;
+		static public final short SUBGRAPH = 14;
 		static public final short BRACE_OPEN = 15;
 		static public final short BRACE_CLOSE = 16;
 		static public final short DIR_IN = 17;
@@ -42,18 +42,18 @@ public class TCMQueryParser extends Parser {
 	}
 
 	static final ParsingTables PARSING_TABLES = new ParsingTables(
-		"U9ozr8TF544Kn$7V7KXJYesc5AM33RjI5GLHL8eK0Nk9lSRUUqbC$FlilMBleZw$kxTtd8a" +
-		"92H9dyzcPUpllTcPsToHTLvUY5ADOnMcezIfI4VBtHJGah3rCgPglJlkfOfLeWlrGlDq8Ha" +
-		"Drcj8rHcELeHejq4BLgawPcgXfojKYDMg56ZHFSnMjsVRDljeN#wma5MgM4ZH7YHgkKHgXa" +
-		"HgjPANO9$je7#ozlREtcg4oPTaRPTjhZTDuvIXVUIgobogm5$PSKpJ9NccoIZNLUZHTCoML" +
-		"spDLg5pLzaYLghA7zi3kspqjjhkgrn9wBDLokwCcBLEBtLQhchLIibjgKxlTL0UZSKV2xDB" +
-		"exSmiF1BUZlPMIip1cO5Oo#9GD5XdAalPxlZp67y1CozorpQU#GVhTDRTnmhwl2EAkIRoR9" +
-		"A83w6Eycf$g8Tpv98NGHs9mDN0q$JpAt0EN0taSSNClHxe5SZfksDu3wSTrLSJzRbZSCvIz" +
-		"scv9G7E6Zcn32zMvjKLg4GLgjrr56#1U6DuHgZ10jHY8UfGZmOiGm6Men5DQ4OBLg0LRUX0" +
-		"5zgTCQ4Jgn2BrU2vQWtMOJqsO2FMOXEsO3EsOWQsOnjsm7cNTc6tDv#Ts8DzsEl4l7W9zkC" +
-		"W3k4mZk0e3k0uZk44Jk8KpdZfPt4E5t0U5t4PLt09Lt4jU2yplWsp7g$T6umF1ahSF#Hc3o" +
-		"2dz6$vbF9#yc86QyxztATReMA$y5t$fTYJKEknFHr0ld7AuslpmS$U9VZObVpiN7xsBjyVa" +
-		"jb$KeXdqWwNnJUTZN4OpowHGomebpqXmzsj8jnzAvNyF7w7ooUd08KeuZ$IY9Ny1XWOnRC=");
+		"U9ozr8Ll544Kn$7VNKiDAbXfWNglYaEnAjGeb2fLN8DhSFT0mZ#8knPt2Zo#UxTtlIOG0ZJ" +
+		"CvhCpztRUxSpixaYweXv5AKQnYjDmwrUa8kGTY6XOM7k4KhHGtVPDHIhM9FkgUBiQZ8RgL8" +
+		"tN14rKcgfLerhLgLxfcgnSpTGYjQXHoxH0ynMjkVRPFjb7#w0a5MYE4ZHFYHgfCHgbqHghP" +
+		"8spz$REtjeRUsslLA9IPTXBPTeBPIbRESgJJuNsJFdsr9vecgROSqtLTCsmFitIR4bbzbZb" +
+		"AbELtLU5AksUtRKxTbkBxPOQj8GUIzLiDzMg9hNR3NMeJLrstQwfat7uny2yKkddp2ay4jw" +
+		"ETjT8ZDuPkrZ5eb0qMAShGvd#aViOUJvpBlIlQZmp3zRZMN4FQ#TnZoXccSXJII8#Z3hAhR" +
+		"sX7iwHIru4TIG2LmFFqSklm3bmDP375JF$zK2lGCx07SDxEEseGRNJG#ez9Nz9WBCwJYpDZ" +
+		"PMwTJagK8ag$mgA9o$U4fuBgb63EjIY7WreH1FoqOmMjA8DxLY63dIY6ylHXHNEkB0IiLY5" +
+		"7gp6Mgp3Ucp06cp4Pcp25fHW6xPYEvptPoTskVFPWTtOYprEp8qNOnyEu20EuJ2EO3#EuIY" +
+		"EumHEuhIRVWPdSHxdS04NSGcNW$SmupimwtFR$S7uKA34$KDkvb$aJFzPFgNiDtanGpNdN$" +
+		"n$hqB5lkEB$aknXw7M0tlqXxd6oSUNvO6N7KhmiFTusP#yx52UGPBPPSOHJwSTBeFlDnDPo" +
+		"6Olo24MbCkNd#RVaoBykrCA#Jv#XyiZ9ny5A4GgiU8VtId0qm==");
 
 	static final Action RETURN2 = new Action() {
 		public Symbol reduce(Symbol[] _symbols, int offset) {
@@ -217,13 +217,11 @@ public class TCMQueryParser extends Parser {
 					 Shell.BenchmarkPathQuery(n); return new Command("PathBenchmark");
 				}
 			},
-			new Action() {	// [35] SubGraphBenchmark = SUBGRAPH PAR_OPEN NUMBER.n COMMA NUMBER.u PAR_CLOSE
+			new Action() {	// [35] SubGraphBenchmark = SUBGRAPH PAR_OPEN NUMBER.n PAR_CLOSE
 				public Symbol reduce(Symbol[] _symbols, int offset) {
 					final Symbol _symbol_n = _symbols[offset + 3];
 					final int n = (int) _symbol_n.value;
-					final Symbol _symbol_u = _symbols[offset + 5];
-					final int u = (int) _symbol_u.value;
-					 Shell.BenchmarkSubGraphQuery(n, u); return new Command("SubGraphBenchmark");
+					 Shell.BenchmarkSubGraphQuery(n); return new Command("SubGraphBenchmark");
 				}
 			},
 			new Action() {	// [36] ShowCommand = SHOWSUMMARY

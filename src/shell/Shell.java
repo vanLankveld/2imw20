@@ -98,9 +98,8 @@ public class Shell {
         }
     }
 
-    public static void BenchmarkSubGraphQuery(int n, int u) {
+    public static void BenchmarkSubGraphQuery(int n) {
         output(String.format("Benchmarking SubGraphQuery with number of queries=%s", n));
-        output(String.format("Inter accuracy of SubGraphQuery: %.4f", SubGraphQuery.getInterAccuracy(graphSummary, n)));
         output(String.format("Average relative error of SubGraphQuery: %.4f", SubGraphQuery.getAverageRelativeError(graphSummary, n)));
     }
 

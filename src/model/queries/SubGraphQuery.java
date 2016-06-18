@@ -19,10 +19,10 @@ public class SubGraphQuery extends GraphQuery {
 
     @Override
     public Object executeQueryOnSummary() {
-        Integer mergedWeight = 0;
+        Integer mergedWeight = null;
 
         for (GraphSketch sketch : this.graphSummary.getGraphSketches()) {
-            Integer currentWeight = 0;
+            Integer currentWeight = null;
             for (Pair<String, String> pair : this.subGraph.getEdges()) {
                 int hashedA = (int)sketch.getHash().hashToBin(pair.getA());
                 int hashedB = (int)sketch.getHash().hashToBin(pair.getB());
@@ -30,14 +30,19 @@ public class SubGraphQuery extends GraphQuery {
                 Integer weight = sketch.getAdjMatrix()[hashedA][hashedB];
 
                 if (weight != null) {
-                    currentWeight += weight;
+                    if  (currentWeight == null) {
+                        currentWeight = weight;
+                    }
+                    else {
+                        currentWeight += weight;
+                    }
                 }
             }
             mergedWeight = mergeMinimum(mergedWeight, currentWeight);
         }
 
-        if (mergedWeight == 0f) {
-            return null;
+        if (mergedWeight == null) {
+            return 0;
         }
         return mergedWeight;
     }
@@ -57,9 +62,6 @@ public class SubGraphQuery extends GraphQuery {
             }
         }
 
-        if (weight == 0f) {
-            return null;
-        }
         return weight;
     }
 
@@ -95,10 +97,64 @@ public class SubGraphQuery extends GraphQuery {
     }
 
     public static float getAverageRelativeError(GraphSummary graphSummary, int nrOfQueries) {
-        return 0;
+        Random random = new Random();
+
+        Float sumRelativeError = 0f;
+
+        for (int i = 0; i < nrOfQueries; i++) {
+            SubGraph subGraph = generateSubGraph(graphSummary.getGraph(), random.nextInt(7)+2);
+
+            GraphQuery query = new SubGraphQuery(graphSummary, subGraph);
+
+            Integer summarizedResult = (Integer)query.executeQueryOnSummary();
+            Integer originalResult = (Integer)query.executeQueryOnOriginal();
+
+            sumRelativeError += (((float)summarizedResult / (float)originalResult) - 1);
+        }
+
+        return sumRelativeError / (float)nrOfQueries;
     }
 
-    public static float getInterAccuracy(GraphSummary graphSummary, int nrOfQueries) {
-        return 0;
+    public static SubGraph generateSubGraph(Graph graph, int nrOfEdges) {
+        Set<Edge> connectedEdges = new HashSet<>();
+
+        List<Edge> edges = new ArrayList<>(graph.getEdges());
+        Collections.shuffle(edges);
+
+        Set<Edge> visited = new HashSet<>();
+
+        int i = 0;
+        Edge start = edges.get(i);
+        while (start.getTo().getOutgoingEdges().size() < 1
+                && start.getFrom().getOutgoingEdges().size() < 2) {
+            i++;
+            start = edges.get(i);
+        }
+
+        getConnectedEdges(start, visited, connectedEdges, nrOfEdges);
+
+        SubGraph subGraph = new SubGraph();
+
+        for (Edge edge : connectedEdges) {
+            subGraph.addEdge(edge);
+        }
+
+        return subGraph;
+    }
+
+    private static void getConnectedEdges(Edge current, Set<Edge> visited, Set<Edge> connected, int nrOfEdges) {
+        if (connected.size() >= nrOfEdges || visited.contains(current)) {
+            return;
+        }
+
+        visited.add(current);
+        connected.add(current);
+
+        Set<Edge> connectedToCurrent = new HashSet<>(current.getFrom().getOutgoingEdges());
+        connectedToCurrent.addAll(current.getTo().getOutgoingEdges());
+
+        for (Edge edge : connectedToCurrent) {
+            getConnectedEdges(edge, visited, connected, nrOfEdges);
+        }
     }
 }

@@ -81,6 +81,6 @@ NodeBenchmark   = NODE PAR_OPEN NUMBER.n PAR_CLOSE {: Shell.BenchmarkNodeQuery(n
 
 PathBenchmark   = PATH PAR_OPEN NUMBER.n PAR_CLOSE {: Shell.BenchmarkPathQuery(n); return new Command("PathBenchmark"); :};
 
-SubGraphBenchmark   = SUBGRAPH PAR_OPEN NUMBER.n COMMA NUMBER.u PAR_CLOSE {: Shell.BenchmarkSubGraphQuery(n, u); return new Command("SubGraphBenchmark"); :};
+SubGraphBenchmark   = SUBGRAPH PAR_OPEN NUMBER.n PAR_CLOSE {: Shell.BenchmarkSubGraphQuery(n); return new Command("SubGraphBenchmark"); :};
 
 ShowCommand = SHOWSUMMARY {: Shell.showSummary(); return new Command("ShowCommand"); :};

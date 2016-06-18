@@ -23,6 +23,11 @@ public class SubGraph extends Symbol {
         return edges;
     }
 
+    public void addEdge(Edge edge) {
+        Pair<String, String> subGraphEdge = new Pair<>(edge.getFrom().getLabel(), edge.getTo().getLabel());
+        this.edges.add(subGraphEdge);
+    }
+
     @Override
     public String toString() {
         List<String> edgesStringList = new ArrayList<>();
